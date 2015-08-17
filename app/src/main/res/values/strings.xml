@@ -8,5 +8,23 @@
     <!-- SyncAdapter related -->
     <string name="sync_account_type">popularmovies.example.com</string>
     <string name="content_authority">app.movies.eman.popularmovies</string>
+    title_activity_settings
+    <string name="title_activity_settings">Setting</string>
+    <string name="pref_sort_label">Sort By</string>
+    <string name="pref_sort_key" translatable="false">sort_by</string>
+
+    <string name="pref_sort_default" translatable="false">popularity.desc</string>
+
+    <string-array name="sort_type_name">
+        <item>Most Popular</item>
+        <item>Highest Rated</item>
+    </string-array>
+
+    <string-array name="sort_type_value">
+        <item>popularity.desc</item>
+        <item>vote_average.desc</item>
+    </string-array>
+
+
 
 </resources>

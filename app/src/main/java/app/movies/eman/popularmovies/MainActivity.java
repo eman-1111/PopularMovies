@@ -15,10 +15,12 @@ public class MainActivity extends ActionBarActivity implements MoviesFragment.Ca
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
 
     private boolean mTwoPane;
+    String mSortBy;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mSortBy = MoviesAdapter.getSortBy(this);
 
         if (findViewById(R.id.movie_detail_container) != null) {
             // The detail container view will be present only in the large-screen layouts
@@ -77,12 +79,48 @@ public class MainActivity extends ActionBarActivity implements MoviesFragment.Ca
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
          return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String sortBy = MoviesAdapter.getSortBy(this);
+        if(sortBy != null && sortBy.equals(mSortBy)){
+            MoviesFragment mf = (MoviesFragment)getSupportFragmentManager().findFragmentById(R.id.movie_fragment);
+            if(mf != null){
+
+            }
+            MovieDetailFragment mdf = (MovieDetailFragment)getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+            if(mdf != null){
+
+            }
+
+        }
+        mSortBy = sortBy;
+
+    }
+    //    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        String location = Utility.getPreferredLocation( this );
+//        // update the location in our second pane using the fragment manager
+//        if (location != null && !location.equals(mLocation)) {
+//            ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
+//            if ( null != ff ) {
+//                ff.onLocationChanged();
+//            }
+//            DetailFragment df = (DetailFragment)getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+//            if ( null != df ) {
+//                df.onLocationChanged(location);
+//            }
+//            mLocation = location;
+//        }
+//    }
 
 
 }

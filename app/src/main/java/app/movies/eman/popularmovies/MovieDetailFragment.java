@@ -78,6 +78,9 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
 
          return rootView;
      }
+    void onSortByChange(){
+        getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+    }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(DETAIL_LOADER, null, this);

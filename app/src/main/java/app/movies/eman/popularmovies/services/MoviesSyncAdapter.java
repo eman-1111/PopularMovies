@@ -26,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Vector;
 
+import app.movies.eman.popularmovies.MoviesAdapter;
 import app.movies.eman.popularmovies.R;
 import app.movies.eman.popularmovies.data.MoviesContract;
 
@@ -56,8 +57,8 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         // Will contain the raw JSON response as a string.
         String moviesJsonStr = null;
 
-        String apiKey ="#############";
-        String sort ="popularity.desc";
+        String apiKey ="";
+        String sort = MoviesAdapter.getSortBy(getContext());
 
         try {
             // Construct the URL for the api.themoviedb.org query

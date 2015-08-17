@@ -1,7 +1,9 @@
 package app.movies.eman.popularmovies;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +25,11 @@ public class MoviesAdapter extends CursorAdapter {
             mContext = context;
         }
 
-
+    public static String getSortBy(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(context.getString(R.string.pref_sort_key),
+                context.getString(R.string.pref_sort_default));
+    }
 
 
 
