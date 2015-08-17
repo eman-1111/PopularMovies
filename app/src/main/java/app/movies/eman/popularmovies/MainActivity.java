@@ -104,23 +104,6 @@ public class MainActivity extends ActionBarActivity implements MoviesFragment.Ca
         mSortBy = sortBy;
 
     }
-    //    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        String location = Utility.getPreferredLocation( this );
-//        // update the location in our second pane using the fragment manager
-//        if (location != null && !location.equals(mLocation)) {
-//            ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
-//            if ( null != ff ) {
-//                ff.onLocationChanged();
-//            }
-//            DetailFragment df = (DetailFragment)getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
-//            if ( null != df ) {
-//                df.onLocationChanged(location);
-//            }
-//            mLocation = location;
-//        }
-//    }
 
 
 }
