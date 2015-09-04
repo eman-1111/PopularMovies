@@ -22,6 +22,8 @@ public class MoviesContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final String PATH_MOVIES = "movies";
+    public static final String PATH_VIDEO = "video";
+    public static final String PATH_REVIEW = "review";
 
 
     /* Inner class that defines the table contents of the location table */
@@ -60,5 +62,60 @@ public class MoviesContract {
         public static String getImageFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }
+    }
+
+    public static  final class VideoEntry implements BaseColumns{
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_VIDEO).build();
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_VIDEO;
+
+        public static final String TABLE_NAME = "video";
+
+        public static final String COLUMN_MOVIE_ID = "movie_id";
+        public static final String COLUMN_VIDEO_ID = "video_id";
+        public static final String COLUMN_ADDRESS = "key";
+        public static final String COLUMN_MOVIE_NAME = "name";
+
+        public static final Uri buildVideoURL (int id){
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildVideoURLWithMovieID(int movie_id) {
+            return CONTENT_URI.buildUpon().appendPath(Integer.toString(movie_id)).build();
+        }
+        public static int getIdFromURL(Uri uri){
+            return Integer.parseInt(uri.getPathSegments().get(1));
+        }
+    }
+    public static final class ReviewEntry implements  BaseColumns{
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_REVIEW).build();
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/"+ PATH_REVIEW;
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_REVIEW;
+
+        public static final String TABLE_NAME = "review";
+
+        public static final String COLUMN_MOVIE_ID = "movie_id";
+        public static final String COLUMN_REVIEW_ID = "review_id";
+        public static final String COLUMN_AUTHOR = "author";
+        public static final String COLUMN_REVIEW = "content";
+
+        public static final Uri buildReviewURL (int id){
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildReviewURLWithMovieID(int movie_id){
+            return CONTENT_URI.buildUpon().appendPath(Integer.toString(movie_id)).build();
+        }
+
+        public static int getIdFromURL(Uri uri){
+            return Integer.parseInt(uri.getPathSegments().get(1));
+
+        }
+
+
     }
 }

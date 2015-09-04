@@ -19,23 +19,40 @@ public class MoviesProvider extends ContentProvider {
 
     static final int MOVIE = 100;
     static final int MOVIE_WITH_IMAGE = 101;
+    static final int VIDEO = 200;
+    static final int REVIEW =300;
 
     private static final String sImageSettingSelection =
             MoviesContract.MoviesEntry.TABLE_NAME +
                     "." + MoviesContract.MoviesEntry.COLUMN_IMAGE_PATH + " = ? ";
 
+    private static final String sVideoSettingSelection =
+            MoviesContract.VideoEntry.TABLE_NAME +
+                    "." + MoviesContract.VideoEntry.COLUMN_MOVIE_ID + " = ? ";
 
-private Cursor getMoviesByImage(Uri uri, String[] projection, String sortOrder) {
-    String ImageURL= MoviesContract.MoviesEntry.getImageFromUri(uri);
 
-    String  selection = sImageSettingSelection;
-    String[]  selectionArgs = new String[]{ImageURL};
+    private Cursor getMoviesByImage(Uri uri, String[] projection, String sortOrder) {
+        String imageURL = MoviesContract.MoviesEntry.getImageFromUri(uri);
 
- return   mOpenHelper.getReadableDatabase().query(
-            MoviesContract.MoviesEntry.TABLE_NAME, projection,selection,
-            selectionArgs,null,null,sortOrder);
+        String selection = sImageSettingSelection;
+        String[] selectionArgs = new String[]{imageURL};
 
-}
+        return mOpenHelper.getReadableDatabase().query(
+                MoviesContract.MoviesEntry.TABLE_NAME, projection, selection,
+                selectionArgs, null, null, sortOrder);
+    }
+
+    private Cursor getVideosById(Uri uri, String[] projection, String sortOrder) {
+        int movieId = MoviesContract.VideoEntry.getIdFromURL(uri);
+        String selection = sVideoSettingSelection;
+        String [] selectionArgs = new String[]{Integer.toString(movieId)};
+
+        return mOpenHelper.getReadableDatabase().query(
+                MoviesContract.VideoEntry.TABLE_NAME, projection, selection,
+                selectionArgs, null, null, sortOrder);
+
+
+    }
 
 
     static UriMatcher buildUriMatcher() {
@@ -45,6 +62,9 @@ private Cursor getMoviesByImage(Uri uri, String[] projection, String sortOrder) 
 
         matcher.addURI(authority, MoviesContract.PATH_MOVIES, MOVIE);
         matcher.addURI(authority, MoviesContract.PATH_MOVIES + "/*", MOVIE_WITH_IMAGE);
+        matcher.addURI(authority, MoviesContract.PATH_VIDEO + " /#", VIDEO);
+        matcher.addURI(authority, MoviesContract.PATH_REVIEW + " /#", REVIEW);
+
 
 
         return matcher;
@@ -63,6 +83,10 @@ private Cursor getMoviesByImage(Uri uri, String[] projection, String sortOrder) 
                 return MoviesContract.MoviesEntry.CONTENT_TYPE;
             case MOVIE_WITH_IMAGE:
                 return MoviesContract.MoviesEntry.CONTENT_ITEM_TYPE;
+            case VIDEO:
+                return MoviesContract.VideoEntry.CONTENT_TYPE;
+            case REVIEW:
+                return MoviesContract.ReviewEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -90,11 +114,13 @@ private Cursor getMoviesByImage(Uri uri, String[] projection, String sortOrder) 
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MoviesContract.MoviesEntry.TABLE_NAME, projection,selection,
                         selectionArgs,null,null,sortOrder);
-
-
-                break;
             }
 
+
+            //"video/#"
+            case VIDEO: {
+                retCursor = getVideosById(uri, projection, sortOrder);
+            }
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -102,6 +128,7 @@ private Cursor getMoviesByImage(Uri uri, String[] projection, String sortOrder) 
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
     }
+
 
 
 
