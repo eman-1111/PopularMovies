@@ -77,7 +77,7 @@ public class MoviesContract {
         public static final String COLUMN_ADDRESS = "key";
         public static final String COLUMN_MOVIE_NAME = "name";
 
-        public static final Uri buildVideoURL (int id){
+        public static final Uri buildVideoURL (long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
@@ -103,7 +103,7 @@ public class MoviesContract {
         public static final String COLUMN_AUTHOR = "author";
         public static final String COLUMN_REVIEW = "content";
 
-        public static final Uri buildReviewURL (int id){
+        public static final Uri buildReviewURL (long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 

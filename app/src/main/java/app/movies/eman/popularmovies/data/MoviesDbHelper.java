@@ -43,7 +43,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
                 MoviesContract.ReviewEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
                 MoviesContract.ReviewEntry.COLUMN_REVIEW_ID + " INTEGER NOT NULL, " +
                 MoviesContract.ReviewEntry.COLUMN_AUTHOR + " TEXT NOT NULL, " +
-                MoviesContract.ReviewEntry.COLUMN_REVIEW + " TEXT NOT NULL, " +
+                MoviesContract.ReviewEntry.COLUMN_REVIEW + " TEXT NOT NULL " +
                 " );";
 
 

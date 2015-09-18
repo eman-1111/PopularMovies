@@ -26,6 +26,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
     private static final int DETAIL_LOADER = 0;
     private Uri mUri;
+    private Uri mUriReview;
     static final String DETAIL_URI = "URI";
     String baseURL = "http://image.tmdb.org/t/p/w185/";
     private static final String[] DETAIL_COLUMNS = {
@@ -38,6 +39,15 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE
     };
 
+    private static final String[] DETAIL_COLUMNS_VIDEO = {
+            MoviesContract.ReviewEntry.TABLE_NAME + "." + MoviesContract.ReviewEntry._ID,
+            MoviesContract.ReviewEntry.COLUMN_REVIEW,
+            MoviesContract.ReviewEntry.COLUMN_AUTHOR
+
+    };
+    public static final int COL_VIDEO_ID = 0;
+    public static final int COL_REVIEW = 1;
+    public static final int COL_AUTHOR_NAME = 2;
     // These indices are tied to DETAIL_COLUMNS.  If DETAIL_COLUMNS changes, these
     // must change.
     public static final int COL_MOVIE_ID = 0;
@@ -68,6 +78,8 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
              mUri = arguments.getParcelable(MovieDetailFragment.DETAIL_URI);
          }
 
+
+
          View rootView = inflater.inflate(R.layout.fragment_movies_detail, container, false);
          mMovieImage = (ImageView) rootView.findViewById(R.id.detail_icon);
 
@@ -89,7 +101,9 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
-        if ( null != mUri) {
+
+
+        if (mUri != null) {
             // Now create and return a CursorLoader that will take care of
             // creating a Cursor for the data being displayed.
             return new CursorLoader( getActivity(),
@@ -99,6 +113,18 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
                     null,
                     null
             );
+        }
+
+        if(mUriReview != null){
+
+            return new CursorLoader(getActivity(),
+                    mUriReview,
+                    DETAIL_COLUMNS,
+                    null,
+                    null,
+                    null);
+
+
         }
         return null;
     }
@@ -126,6 +152,8 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
 
             String movieOverview = data.getString(COL_MOVIE_OVERVIEW);
             mMovieOverview.setText(movieOverview);
+
+
 
 
         }

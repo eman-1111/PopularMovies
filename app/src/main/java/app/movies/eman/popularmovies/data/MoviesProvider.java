@@ -5,6 +5,7 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
@@ -30,6 +31,11 @@ public class MoviesProvider extends ContentProvider {
             MoviesContract.VideoEntry.TABLE_NAME +
                     "." + MoviesContract.VideoEntry.COLUMN_MOVIE_ID + " = ? ";
 
+    private static final String sReviewSettingSelection =
+            MoviesContract.VideoEntry.TABLE_NAME +
+                    "." + MoviesContract.VideoEntry.COLUMN_MOVIE_ID + " = ? ";
+
+
 
     private Cursor getMoviesByImage(Uri uri, String[] projection, String sortOrder) {
         String imageURL = MoviesContract.MoviesEntry.getImageFromUri(uri);
@@ -45,6 +51,18 @@ public class MoviesProvider extends ContentProvider {
     private Cursor getVideosById(Uri uri, String[] projection, String sortOrder) {
         int movieId = MoviesContract.VideoEntry.getIdFromURL(uri);
         String selection = sVideoSettingSelection;
+        String [] selectionArgs = new String[]{Integer.toString(movieId)};
+
+        return mOpenHelper.getReadableDatabase().query(
+                MoviesContract.VideoEntry.TABLE_NAME, projection, selection,
+                selectionArgs, null, null, sortOrder);
+
+
+    }
+
+    private Cursor getReviewsById(Uri uri, String[] projection, String sortOrder) {
+        int movieId = MoviesContract.ReviewEntry.getIdFromURL(uri);
+        String selection = sReviewSettingSelection;
         String [] selectionArgs = new String[]{Integer.toString(movieId)};
 
         return mOpenHelper.getReadableDatabase().query(
@@ -122,6 +140,11 @@ public class MoviesProvider extends ContentProvider {
                 retCursor = getVideosById(uri, projection, sortOrder);
             }
 
+            //"review/#"
+            case REVIEW: {
+                retCursor = getReviewsById(uri, projection, sortOrder);
+            }
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -146,10 +169,27 @@ public class MoviesProvider extends ContentProvider {
                 if ( _id > 0 )
                     returnUri = MoviesContract.MoviesEntry.buildMovieUri(_id);
                 else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                    throw new SQLException("Failed to insert row into " + uri);
                 break;
 
             }
+
+            case REVIEW:{
+                long _id = db.insert(MoviesContract.ReviewEntry.TABLE_NAME, null, values);
+                if(_id > 0)
+                    returnUri = MoviesContract.ReviewEntry.buildReviewURL(_id);
+                else
+                    throw new SQLException("Failed to insert row into" + uri);
+            }
+
+            case VIDEO: {
+                long _id = db.insert(MoviesContract.VideoEntry.TABLE_NAME, null, values);
+                if(_id > 0)
+                    returnUri = MoviesContract.ReviewEntry.buildReviewURL(_id);
+                else
+                    throw new SQLException("Failed to insert row into" + uri);
+            }
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -170,6 +210,12 @@ public class MoviesProvider extends ContentProvider {
                 rowMatched = db.delete(MoviesContract.MoviesEntry.TABLE_NAME, selection, selectionArgs);
                 break;
 
+            case REVIEW:
+                rowMatched = db.delete(MoviesContract.ReviewEntry.TABLE_NAME,selection, selectionArgs);
+                break;
+            case VIDEO:
+                rowMatched = db.delete(MoviesContract.VideoEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
   }
@@ -189,10 +235,20 @@ public class MoviesProvider extends ContentProvider {
             int rowMatched;
             switch (match){
                 case MOVIE: {
-                    rowMatched = db.update(MoviesContract.MoviesEntry.TABLE_NAME, values,selection, selectionArgs);
+                    rowMatched = db.update(MoviesContract.MoviesEntry.TABLE_NAME, values,
+                            selection, selectionArgs);
                     break;
                 }
-
+                case REVIEW: {
+                    rowMatched = db.update(MoviesContract.ReviewEntry.TABLE_NAME, values,
+                            selection, selectionArgs);
+                    break;
+                }
+                case VIDEO: {
+                    rowMatched = db.update(MoviesContract.VideoEntry.TABLE_NAME, values,
+                            selection, selectionArgs);
+                    break;
+                }
                 default:
                     throw new UnsupportedOperationException("Unknown uri: " + uri);
             }

@@ -57,7 +57,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         // Will contain the raw JSON response as a string.
         String moviesJsonStr = null;
 
-        String apiKey ="";
+        String apiKey ="ce754b8d51f322f0c4dea3f43e34a771";
         String sort = MoviesAdapter.getSortBy(getContext());
 
         try {
@@ -207,12 +207,12 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
 
 
-            Log.d(LOG_TAG, "FetchWeatherTask Complete. " + cVVector.size() + " Inserted");
+            Log.d(LOG_TAG, "FetchMovie Complete. " + cVVector.size() + " Inserted");
 
 
-            for (String s : resultStr) {
+           /* for (String s : resultStr) {
                  Log.v(LOG_TAG, "Movie entry: " + s);
-            }
+            }*/
 
         }catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
