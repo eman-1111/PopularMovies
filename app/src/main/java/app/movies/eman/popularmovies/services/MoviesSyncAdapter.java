@@ -57,7 +57,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         // Will contain the raw JSON response as a string.
         String moviesJsonStr = null;
 
-        String apiKey ="ce754b8d51f322f0c4dea3f43e34a771";
+        String apiKey ="******";
         String sort = MoviesAdapter.getSortBy(getContext());
 
         try {
