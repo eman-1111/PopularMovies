@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import app.movies.eman.popularmovies.data.MoviesContract;
+import app.movies.eman.popularmovies.services.MoviesSyncAdapter;
 
 /**
  * Created by user on 29/07/2015.
@@ -75,12 +76,7 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
                 }
                 mPosition = position;
             }
-//                Toast.makeText(getActivity(), "" + position,
-//                        Toast.LENGTH_SHORT).show();
-//                MoviesSyncAdapter moviesSyncAdapter = new MoviesSyncAdapter(getActivity());
-//                moviesSyncAdapter.execute();
-//                mPosition = position;
-//            }
+
         });
         if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)) {
             // The GridView probably hasn't even been populated yet.  Actually perform the
@@ -89,10 +85,27 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
         }
         return rootView;
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // When tablets rotate, the currently selected list item needs to be saved.
+        // When no item is selected, mPosition will be set to gridView.INVALID_POSITION,
+        // so check for that before storing.
+        if (mPosition != gridView.INVALID_POSITION) {
+            outState.putInt(SELECTED_KEY, mPosition);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(FORECAST_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
+    }
+
+    void onSortByChange(){
+        MoviesSyncAdapter.initializeSyncAdapter(getActivity());
+        getLoaderManager().restartLoader(FORECAST_LOADER ,null, this);
     }
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {

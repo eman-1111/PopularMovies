@@ -1,8 +1,15 @@
+
 <resources>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="MovieListStyle">
+        <!-- Here it's a stub.  In screens of sufficient width, this style includes modifications
+        for two-pane layout -->
+        <item name="android:numColumns">2</item>
     </style>
 
 </resources>

@@ -4,10 +4,10 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context="com.example.android.sunshine.app.ForecastFragment">
   <GridView
+       style="@style/MovieListStyle"
         android:id="@+id/movie_image_gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="2"
         android:stretchMode="columnWidth"
         android:gravity="center"
         />
