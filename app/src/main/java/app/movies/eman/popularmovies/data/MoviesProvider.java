@@ -102,9 +102,9 @@ public class MoviesProvider extends ContentProvider {
             case MOVIE_WITH_IMAGE:
                 return MoviesContract.MoviesEntry.CONTENT_ITEM_TYPE;
             case VIDEO:
-                return MoviesContract.VideoEntry.CONTENT_TYPE;
+                return MoviesContract.VideoEntry.CONTENT_ITEM_TYPE;
             case REVIEW:
-                return MoviesContract.ReviewEntry.CONTENT_TYPE;
+                return MoviesContract.ReviewEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -132,17 +132,20 @@ public class MoviesProvider extends ContentProvider {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MoviesContract.MoviesEntry.TABLE_NAME, projection,selection,
                         selectionArgs,null,null,sortOrder);
+                break;
             }
 
 
             //"video/#"
             case VIDEO: {
                 retCursor = getVideosById(uri, projection, sortOrder);
+                break;
             }
 
             //"review/#"
             case REVIEW: {
                 retCursor = getReviewsById(uri, projection, sortOrder);
+                break;
             }
 
             default:
@@ -180,6 +183,7 @@ public class MoviesProvider extends ContentProvider {
                     returnUri = MoviesContract.ReviewEntry.buildReviewURL(_id);
                 else
                     throw new SQLException("Failed to insert row into" + uri);
+                break;
             }
 
             case VIDEO: {
@@ -188,6 +192,7 @@ public class MoviesProvider extends ContentProvider {
                     returnUri = MoviesContract.ReviewEntry.buildReviewURL(_id);
                 else
                     throw new SQLException("Failed to insert row into" + uri);
+                break;
             }
 
             default:

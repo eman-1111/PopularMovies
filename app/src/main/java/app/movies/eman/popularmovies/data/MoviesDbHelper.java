@@ -36,7 +36,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
                 MoviesContract.VideoEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
                 MoviesContract.VideoEntry.COLUMN_VIDEO_ID + " INTEGER NOT NULL, " +
                 MoviesContract.VideoEntry.COLUMN_MOVIE_NAME + " TEXT NOT NULL, " +
-                MoviesContract.VideoEntry.COLUMN_ADDRESS + " TEXT NOT NULL, " +
+                MoviesContract.VideoEntry.COLUMN_ADDRESS + " TEXT NOT NULL " +
                 " );";
         final String SQL_CREATE_REVIEW_TABLE = "CREATE TABLE " + MoviesContract.ReviewEntry.TABLE_NAME + " ("+
                 MoviesContract.ReviewEntry._ID + " INTEGER PRIMARY KEY, " +
@@ -48,7 +48,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
 
 
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TABLE);
-        sqLiteDatabase.execSQL(SQL_CREATE_REVIEW_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_VIDEO_TABLE);
         sqLiteDatabase.execSQL(SQL_CREATE_REVIEW_TABLE);
 
 

@@ -57,7 +57,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         // Will contain the raw JSON response as a string.
         String moviesJsonStr = null;
 
-        String apiKey ="******";
+        String apiKey ="ce754b8d51f322f0c4dea3f43e34a771";
         String sort = MoviesAdapter.getSortBy(getContext());
 
         try {
@@ -188,21 +188,13 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                 movieValues.put( MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE, voteAverage);
                 movieValues.put( MoviesContract.MoviesEntry.COLUMN_MOVIE_ID, movieID);
 
-//                Uri insertedUri =
+
                 getContext().getContentResolver().insert(MoviesContract.MoviesEntry.CONTENT_URI, movieValues);
 
                 cVVector.add(movieValues);
             }
 
-//            int inserted = 0;
-//            // add to database
-//            if ( cVVector.size() > 0 ) {
-//                ContentValues[] cvArray = new ContentValues[cVVector.size()];
-//                cVVector.toArray(cvArray);
-//                mContext.getContentResolver().bulkInsert(MoviesContract.MoviesEntry.CONTENT_URI, cvArray);
-//
-//
-//            }
+
 
 
 
