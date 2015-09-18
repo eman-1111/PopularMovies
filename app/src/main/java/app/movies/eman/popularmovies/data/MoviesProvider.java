@@ -29,19 +29,19 @@ public class MoviesProvider extends ContentProvider {
 
     private static final String sVideoSettingSelection =
             MoviesContract.VideoEntry.TABLE_NAME +
-                    "." + MoviesContract.VideoEntry.COLUMN_MOVIE_ID + " = ? ";
+                    "." + MoviesContract.VideoEntry.COLUMN_MOVIE_IMAGE + " = ? ";
 
     private static final String sReviewSettingSelection =
             MoviesContract.VideoEntry.TABLE_NAME +
-                    "." + MoviesContract.VideoEntry.COLUMN_MOVIE_ID + " = ? ";
+                    "." + MoviesContract.ReviewEntry.COLUMN_MOVIE_IMAGE + " = ? ";
 
 
 
     private Cursor getMoviesByImage(Uri uri, String[] projection, String sortOrder) {
-        String imageURL = MoviesContract.MoviesEntry.getImageFromUri(uri);
+        String image = MoviesContract.MoviesEntry.getImageFromUri(uri);
 
         String selection = sImageSettingSelection;
-        String[] selectionArgs = new String[]{imageURL};
+        String[] selectionArgs = new String[]{image};
 
         return mOpenHelper.getReadableDatabase().query(
                 MoviesContract.MoviesEntry.TABLE_NAME, projection, selection,
@@ -49,9 +49,10 @@ public class MoviesProvider extends ContentProvider {
     }
 
     private Cursor getVideosById(Uri uri, String[] projection, String sortOrder) {
-        int movieId = MoviesContract.VideoEntry.getIdFromURL(uri);
+        String image = MoviesContract.VideoEntry.getImageFromURL(uri);
+
         String selection = sVideoSettingSelection;
-        String [] selectionArgs = new String[]{Integer.toString(movieId)};
+        String[] selectionArgs = new String[]{image};
 
         return mOpenHelper.getReadableDatabase().query(
                 MoviesContract.VideoEntry.TABLE_NAME, projection, selection,
@@ -61,9 +62,9 @@ public class MoviesProvider extends ContentProvider {
     }
 
     private Cursor getReviewsById(Uri uri, String[] projection, String sortOrder) {
-        int movieId = MoviesContract.ReviewEntry.getIdFromURL(uri);
+        String image = MoviesContract.VideoEntry.getImageFromURL(uri);
         String selection = sReviewSettingSelection;
-        String [] selectionArgs = new String[]{Integer.toString(movieId)};
+        String [] selectionArgs = new String[]{image};
 
         return mOpenHelper.getReadableDatabase().query(
                 MoviesContract.VideoEntry.TABLE_NAME, projection, selection,

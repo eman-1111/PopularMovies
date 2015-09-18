@@ -76,7 +76,7 @@ public class MoviesContract {
 
         public static final String TABLE_NAME = "video";
 
-        public static final String COLUMN_MOVIE_ID = "movie_id";
+        public static final String COLUMN_MOVIE_IMAGE = "image_path";
         public static final String COLUMN_VIDEO_ID = "video_id";
         public static final String COLUMN_ADDRESS = "key";
         public static final String COLUMN_MOVIE_NAME = "name";
@@ -85,11 +85,11 @@ public class MoviesContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildVideoURLWithMovieID(int movie_id) {
-            return CONTENT_URI.buildUpon().appendPath(Integer.toString(movie_id)).build();
+        public static Uri buildVideoURL(String image){
+            return CONTENT_URI.buildUpon().appendPath(image).build();
         }
-        public static int getIdFromURL(Uri uri){
-            return Integer.parseInt(uri.getPathSegments().get(1));
+        public static String getImageFromURL(Uri uri){
+            return uri.getPathSegments().get(1);
         }
     }
 
@@ -104,7 +104,7 @@ public class MoviesContract {
 
         public static final String TABLE_NAME = "review";
 
-        public static final String COLUMN_MOVIE_ID = "movie_id";
+        public static final String COLUMN_MOVIE_IMAGE = "image_path";
         public static final String COLUMN_REVIEW_ID = "review_id";
         public static final String COLUMN_AUTHOR = "author";
         public static final String COLUMN_REVIEW = "content";
@@ -113,12 +113,12 @@ public class MoviesContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildReviewURLWithMovieID(int movie_id){
-            return CONTENT_URI.buildUpon().appendPath(Integer.toString(movie_id)).build();
+        public static Uri buildReviewURL(String image){
+            return CONTENT_URI.buildUpon().appendPath(image).build();
         }
 
-        public static int getIdFromURL(Uri uri){
-            return Integer.parseInt(uri.getPathSegments().get(1));
+        public static String getImageFromURL(Uri uri){
+            return uri.getPathSegments().get(1);
 
         }
 

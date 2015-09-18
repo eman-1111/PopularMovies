@@ -27,6 +27,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     private static final int DETAIL_LOADER = 0;
     private Uri mUri;
     private Uri mUriReview;
+    private Uri mUriVideo;
     static final String DETAIL_URI = "URI";
     String baseURL = "http://image.tmdb.org/t/p/w185/";
     private static final String[] DETAIL_COLUMNS = {
@@ -76,6 +77,9 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
          Bundle arguments = getArguments();
          if (arguments != null) {
              mUri = arguments.getParcelable(MovieDetailFragment.DETAIL_URI);
+             String image = MoviesContract.MoviesEntry.getImageFromUri(mUri);
+             //mUriVideo
+             //mUriReview
          }
 
 
