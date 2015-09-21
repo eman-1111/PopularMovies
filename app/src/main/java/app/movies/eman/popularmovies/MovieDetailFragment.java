@@ -78,8 +78,8 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
          if (arguments != null) {
              mUri = arguments.getParcelable(MovieDetailFragment.DETAIL_URI);
              String image = MoviesContract.MoviesEntry.getImageFromUri(mUri);
-             //mUriVideo
-             //mUriReview
+             mUriVideo = MoviesContract.VideoEntry.buildVideoURL(image);
+             mUriReview = MoviesContract.ReviewEntry.buildReviewURL(image);
          }
 
 

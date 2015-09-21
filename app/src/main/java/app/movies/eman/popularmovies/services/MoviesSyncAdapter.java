@@ -57,22 +57,23 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         // Will contain the raw JSON response as a string.
         String moviesJsonStr = null;
 
-        String apiKey ="ce754b8d51f322f0c4dea3f43e34a771";
+        String apiKey ="####";
         String sort = MoviesAdapter.getSortBy(getContext());
 
         try {
             // Construct the URL for the api.themoviedb.org query
 
-            final String FORECAST_BASE_URL =
+            final String MOVES_BASE_URL =
                     "http://api.themoviedb.org/3/discover/movie?";
             final String SORT_PARAM = "sort_by";
             final String KEY_PARAM = "api_key";
 
             //http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=[YOUR API KEY]
-            Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
+            Uri builtUri = Uri.parse(MOVES_BASE_URL).buildUpon()
                     .appendQueryParameter(SORT_PARAM, sort)
                     .appendQueryParameter(KEY_PARAM, apiKey)
                     .build();
+
 
             URL url = new URL(builtUri.toString());
 
@@ -104,7 +105,17 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             }
 
             moviesJsonStr = buffer.toString();
-            getMoviesDataFromJson(moviesJsonStr);
+            int moviesID [] = getMoviesDataFromJson(moviesJsonStr);
+
+            for(int i = 0; i < moviesID.length; i++){
+
+
+            }
+
+            //https://api.themoviedb.org/3/movie/211672/videos?key=[YOUR API KEY]
+
+
+            //https://api.themoviedb.org/3/movie/211672/reviews?key=[YOUR API KEY]
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attempting
@@ -138,7 +149,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
      * Fortunately parsing is easy:  constructor takes the JSON string and converts it
      * into an Object hierarchy for us.
      */
-    private void getMoviesDataFromJson(String moviesJsonStr)
+    private int[] getMoviesDataFromJson(String moviesJsonStr)
             throws JSONException {
 
         final String OWM_RESULT = "results";
@@ -149,6 +160,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         final String OWM_VOTE_AVERAGE = "vote_average";
         final String OWM_POSTER_PATH = "poster_path";
         final String OWM_MOVIE_ID = "id";
+        int moviesID [] = new int[0];
 
         try {
 
@@ -158,6 +170,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
             String[] resultStr = new String[moviesArray.length()];
             Vector<ContentValues> cVVector = new Vector<ContentValues>(moviesArray.length());
+
 
             for(int i = 0; i < moviesArray.length(); i++){
                 String overview;
@@ -187,6 +200,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                 movieValues.put( MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE, releaseDate);
                 movieValues.put( MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE, voteAverage);
                 movieValues.put( MoviesContract.MoviesEntry.COLUMN_MOVIE_ID, movieID);
+                moviesID [i] = movieID;
 
 
                 getContext().getContentResolver().insert(MoviesContract.MoviesEntry.CONTENT_URI, movieValues);
@@ -210,6 +224,8 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         }
+
+        return moviesID;
 
     }
 
