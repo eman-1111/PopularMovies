@@ -56,8 +56,11 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
         // Will contain the raw JSON response as a string.
         String moviesJsonStr = null;
+        String videoJsonStr = null;
+        String reviewJsonStr = null;
 
-        String apiKey ="####";
+
+        String apiKey ="ce754b8d51f322f0c4dea3f43e34a771";
         String sort = MoviesAdapter.getSortBy(getContext());
 
         try {
@@ -77,7 +80,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
             URL url = new URL(builtUri.toString());
 
-            // Create the request to OpenWeatherMap, and open the connection
+            // Create the request to themoviedb, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
@@ -109,13 +112,95 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
             for(int i = 0; i < moviesID.length; i++){
 
+                //https://api.themoviedb.org/3/movie/211672/videos?api_key=[YOUR API KEY]
+                final String VIDEO_BASE_URL =
+                        "https://api.themoviedb.org/3/movie/"+ moviesID[i]+ "/videos?";
+
+                Uri builtVideoUrl = Uri.parse(VIDEO_BASE_URL).buildUpon()
+                        .appendQueryParameter(KEY_PARAM,apiKey)
+                        .build();
+
+                URL videoUrl = new URL(builtVideoUrl.toString());
+                //Log.d(LOG_TAG, builtVideoUrl.toString());
+
+                urlConnection = (HttpURLConnection) videoUrl.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+                // Read the input stream into a String
+                InputStream videoInputStream = urlConnection.getInputStream();
+                StringBuffer videoBuffer = new StringBuffer();
+                if (videoInputStream == null) {
+                    // Nothing to do.
+                    // return;
+                }
+                reader = new BufferedReader(new InputStreamReader(videoInputStream));
+
+                String videoLine;
+                while ((videoLine = reader.readLine()) != null) {
+                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                    // But it does make debugging a *lot* easier if you print out the completed
+                    // buffer for debugging.
+                    videoBuffer.append(videoLine + "\n");
+                }
+
+                if (videoBuffer.length() == 0) {
+                    // Stream was empty.  No point in parsing.
+
+                }
+                videoJsonStr = videoBuffer.toString();
+               // Log.d(LOG_TAG, videoJsonStr);
+                getVideoFormJson(videoJsonStr, moviesID[i]);
+
+                ///////////////////////////////////////////////////////////////////
+
+                //https://api.themoviedb.org/3/movie/211672/reviews?api_key=[YOUR API KEY]
+                final String REVIEW_BASE_URL =
+                        "https://api.themoviedb.org/3/movie/" + moviesID[i]+ "/reviews?";
+                Uri builtReviewUrl = Uri.parse(REVIEW_BASE_URL).buildUpon()
+                        .appendQueryParameter(KEY_PARAM, apiKey)
+                        .build();
+
+
+                URL reviewUrl = new URL(builtReviewUrl.toString());
+                //Log.d(LOG_TAG, builtReviewUrl.toString());
+
+                urlConnection = (HttpURLConnection) reviewUrl.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+                // Read the input stream into a String
+                InputStream reviewInputStream = urlConnection.getInputStream();
+                StringBuffer reviewBuffer = new StringBuffer();
+                if (reviewInputStream == null) {
+                    // Nothing to do.
+                    // return;
+                }
+                reader = new BufferedReader(new InputStreamReader(reviewInputStream));
+
+                String reviewLine;
+                while ((reviewLine = reader.readLine()) != null) {
+                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                    // But it does make debugging a *lot* easier if you print out the completed
+                    // buffer for debugging.
+                    reviewBuffer.append(reviewLine + "\n");
+                }
+
+                if (reviewBuffer.length() == 0) {
+                    // Stream was empty.  No point in parsing.
+
+                }
+                reviewJsonStr = reviewBuffer.toString();
+                //Log.d(LOG_TAG, reviewJsonStr);
+
+                getReviewFromJson(reviewJsonStr, moviesID[i]);
+
+
 
             }
 
-            //https://api.themoviedb.org/3/movie/211672/videos?key=[YOUR API KEY]
 
 
-            //https://api.themoviedb.org/3/movie/211672/reviews?key=[YOUR API KEY]
+
+
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attempting
@@ -135,12 +220,138 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                 }
             }
         }
-        //     return;
 
         return ;
     }
 
+    private void getReviewFromJson(String reviewJsonStr, int movieId)
+            throws JSONException {
 
+        final String OWN_RESULT = "results";
+
+        final String OWN_REVIEW_ID = "id";
+        final String OWN_AUTHOR = "author";
+        final String OWN_REVIEW = "content";
+        try {
+            JSONObject reviewJSON = new JSONObject(reviewJsonStr);
+            JSONArray reviewArray = reviewJSON.getJSONArray(OWN_RESULT);
+
+            Vector<ContentValues> cVVector = new Vector<ContentValues>(reviewArray.length());
+
+            for(int i = 0; i < reviewArray.length(); i++){
+
+                String review;
+                String author;
+                String reviewId;
+
+                JSONObject fullReview = reviewArray.getJSONObject(i);
+                review = fullReview.getString(OWN_REVIEW);
+                author = fullReview.getString(OWN_AUTHOR);
+                reviewId = fullReview.getString(OWN_REVIEW_ID);
+
+                ContentValues reviewValue = new ContentValues();
+
+
+                reviewValue.put(MoviesContract.ReviewEntry.COLUMN_AUTHOR, author);
+                reviewValue.put(MoviesContract.ReviewEntry.COLUMN_REVIEW, review);
+                reviewValue.put(MoviesContract.ReviewEntry.COLUMN_REVIEW_ID, reviewId);
+                reviewValue.put(MoviesContract.ReviewEntry.COLUMN_MOVIE_ID, movieId);
+
+                getContext().getContentResolver().delete(MoviesContract.ReviewEntry.CONTENT_URI,
+                        MoviesContract.ReviewEntry.COLUMN_MOVIE_ID + " = ?",
+                        new String[]{Integer.toString(movieId)});
+
+      //         getContext().getContentResolver().insert(MoviesContract.ReviewEntry.CONTENT_URI, reviewValue);
+
+                cVVector.add(reviewValue);
+                if ( cVVector.size() > 0 ) {
+
+                    // delete old data so we don't build up an endless history
+
+
+                    ContentValues[] cvArray = new ContentValues[cVVector.size()];
+                    cVVector.toArray(cvArray);
+                    getContext().getContentResolver().bulkInsert(MoviesContract.ReviewEntry.CONTENT_URI, cvArray);
+
+
+
+                }
+
+            }
+            Log.d(LOG_TAG, "FetchReview Complete. " + cVVector.size() + " Inserted");
+        }catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void getVideoFormJson(String videoJsonStr, int movieId)
+            throws JSONException {
+
+        final String OWN_RESULT = "results";
+
+        final String OWN_VIDEO_ID = "id";
+        final String OWN_KEY = "key";
+        final String OWN_NAME = "name";
+        try {
+            JSONObject videoJSON = new JSONObject(videoJsonStr);
+            JSONArray videoArray = videoJSON.getJSONArray(OWN_RESULT);
+
+            Vector<ContentValues> cVVector = new Vector<ContentValues>(videoArray.length());
+
+            for(int i = 0; i < videoArray.length(); i++){
+
+                String key;
+                String name;
+                String videoId;
+
+                JSONObject fullVideo= videoArray.getJSONObject(i);
+                key = fullVideo.getString(OWN_KEY);
+                name = fullVideo.getString(OWN_NAME);
+                videoId = fullVideo.getString(OWN_VIDEO_ID);
+
+                ContentValues videoValue = new ContentValues();
+
+
+
+                videoValue.put(MoviesContract.VideoEntry.COLUMN_ADDRESS, key);
+                videoValue.put(MoviesContract.VideoEntry.COLUMN_MOVIE_NAME, name);
+                videoValue.put(MoviesContract.VideoEntry.COLUMN_VIDEO_ID, videoId);
+                videoValue.put(MoviesContract.VideoEntry.COLUMN_MOVIE_ID, movieId);
+
+                getContext().getContentResolver().delete(MoviesContract.VideoEntry.CONTENT_URI,
+                        MoviesContract.VideoEntry.COLUMN_MOVIE_ID + " = ?",
+                        new String[]{Integer.toString(movieId)});
+
+            //   getContext().getContentResolver().insert(MoviesContract.VideoEntry.CONTENT_URI, videoValue);
+
+                cVVector.add(videoValue);
+
+                if ( cVVector.size() > 0 ) {
+
+                 // delete old data so we don't build up an endless history
+
+                    ContentValues[] cvArray = new ContentValues[cVVector.size()];
+                    cVVector.toArray(cvArray);
+                    getContext().getContentResolver().bulkInsert(MoviesContract.VideoEntry.CONTENT_URI, cvArray);
+
+
+
+                }
+
+
+            }
+            Log.d(LOG_TAG, "FetchVideos Complete. " + cVVector.size() + " Inserted");
+
+        }catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
+        }
+
+
+    }
 
     /**
      * Take the String representing the complete forecast in JSON Format and
@@ -162,15 +373,17 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         final String OWM_MOVIE_ID = "id";
         int moviesID [] = new int[0];
 
+
         try {
 
 
             JSONObject moviesJson = new JSONObject(moviesJsonStr);
             JSONArray moviesArray = moviesJson.getJSONArray(OWM_RESULT);
 
-            String[] resultStr = new String[moviesArray.length()];
+           //String[] resultStr = new String[moviesArray.length()];
             Vector<ContentValues> cVVector = new Vector<ContentValues>(moviesArray.length());
 
+            moviesID = new int[moviesArray.length()];
 
             for(int i = 0; i < moviesArray.length(); i++){
                 String overview;
@@ -190,9 +403,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
                 ContentValues movieValues = new ContentValues();
 
-                getContext().getContentResolver().delete(MoviesContract.MoviesEntry.CONTENT_URI,
-                        MoviesContract.MoviesEntry.COLUMN_IMAGE_PATH + " = ?",
-                        new String[]{image});
+
 
                 movieValues.put( MoviesContract.MoviesEntry.COLUMN_IMAGE_PATH, image);
                 movieValues.put( MoviesContract.MoviesEntry.COLUMN_MOVIE_NAME, title);
@@ -203,9 +414,26 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                 moviesID [i] = movieID;
 
 
-                getContext().getContentResolver().insert(MoviesContract.MoviesEntry.CONTENT_URI, movieValues);
+                //getContext().getContentResolver().insert(MoviesContract.MoviesEntry.buildMovieURL(movieID), movieValues);
 
                 cVVector.add(movieValues);
+
+
+                if ( cVVector.size() > 0 ) {
+                    // delete old data so we don't build up an endless history
+                    for(int j = 0; j < moviesID.length; j++){
+                        getContext().getContentResolver().delete(MoviesContract.MoviesEntry.CONTENT_URI,
+                                MoviesContract.MoviesEntry.COLUMN_MOVIE_ID + " = ?",
+                                new String[]{Integer.toString(moviesID[j])});
+                    }
+
+
+                    ContentValues[] cvArray = new ContentValues[cVVector.size()];
+                    cVVector.toArray(cvArray);
+                    getContext().getContentResolver().bulkInsert(MoviesContract.MoviesEntry.CONTENT_URI, cvArray);
+
+
+                }
             }
 
 

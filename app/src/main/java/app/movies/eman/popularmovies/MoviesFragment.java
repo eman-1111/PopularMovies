@@ -27,17 +27,19 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
     private int mPosition = GridView.INVALID_POSITION;
 
     private static final String SELECTED_KEY = "selected_position";
-    private static final int FORECAST_LOADER = 0;
+    private static final int MOVIE_LOADER = 0;
 
     private static final String[] DETAIL_COLUMNS = {
             MoviesContract.MoviesEntry.TABLE_NAME + "." + MoviesContract.MoviesEntry._ID,
-            MoviesContract.MoviesEntry.COLUMN_IMAGE_PATH
+            MoviesContract.MoviesEntry.COLUMN_IMAGE_PATH,
+            MoviesContract.MoviesEntry.COLUMN_MOVIE_ID
     };
 
     // These indices are tied to DETAIL_COLUMNS.  If DETAIL_COLUMNS changes, these
     // must change.
-    public static final int COL_MOVIE_ID = 0;
+    public static final int COL__ID = 0;
     public static final int COL_IMAGE_PATH = 1;
+    public static final int COL_MOVIE_ID = 2;
 
 
 
@@ -68,9 +70,9 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
-                    String image = cursor.getString(COL_IMAGE_PATH);
+                    int movieId = cursor.getInt(COL_MOVIE_ID);
                     ((Callback) getActivity())
-                            .onItemSelected(MoviesContract.MoviesEntry.buildMovieURL(image));
+                            .onItemSelected(MoviesContract.MoviesEntry.buildMovieURL(movieId));
 
 
                 }
@@ -99,13 +101,13 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(FORECAST_LOADER, null, this);
+        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
 
     void onSortByChange(){
         MoviesSyncAdapter.initializeSyncAdapter(getActivity());
-        getLoaderManager().restartLoader(FORECAST_LOADER ,null, this);
+        getLoaderManager().restartLoader(MOVIE_LOADER ,null, this);
     }
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {

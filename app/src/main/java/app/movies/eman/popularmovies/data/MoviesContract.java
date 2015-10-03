@@ -53,14 +53,14 @@ public class MoviesContract {
         public static Uri buildMovieUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
-        public static Uri buildMovieURL(String image) {
-            return CONTENT_URI.buildUpon().appendPath(image).build();
+        public static Uri buildMovieURL(int movieId) {
+            return CONTENT_URI.buildUpon().appendPath(Integer.toString(movieId)).build();
         }
         public static Uri buildMoviesURL() {
             return CONTENT_URI.buildUpon().build();
         }
-        public static String getImageFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
+        public static int getMovieIdFromUri(Uri uri) {
+            return Integer.parseInt(uri.getPathSegments().get(1)) ;
         }
     }
 
@@ -71,12 +71,13 @@ public class MoviesContract {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_VIDEO).build();
 
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_VIDEO;
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_VIDEO;
 
         public static final String TABLE_NAME = "video";
 
-        public static final String COLUMN_MOVIE_IMAGE = "image_path";
+        public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_VIDEO_ID = "video_id";
         public static final String COLUMN_ADDRESS = "key";
         public static final String COLUMN_MOVIE_NAME = "name";
@@ -85,11 +86,11 @@ public class MoviesContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildVideoURL(String image){
-            return CONTENT_URI.buildUpon().appendPath(image).build();
+        public static Uri buildVideoURL(int movieId){
+            return CONTENT_URI.buildUpon().appendPath(Integer.toString(movieId)).build();
         }
-        public static String getImageFromURL(Uri uri){
-            return uri.getPathSegments().get(1);
+        public static int getVideoIdFromURL(Uri uri){
+            return Integer.parseInt(uri.getPathSegments().get(1));
         }
     }
 
@@ -98,13 +99,13 @@ public class MoviesContract {
     public static final class ReviewEntry implements  BaseColumns{
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_REVIEW).build();
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/"+ PATH_REVIEW;
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/"+ PATH_REVIEW;
 
 
         public static final String TABLE_NAME = "review";
 
-        public static final String COLUMN_MOVIE_IMAGE = "image_path";
+        public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_REVIEW_ID = "review_id";
         public static final String COLUMN_AUTHOR = "author";
         public static final String COLUMN_REVIEW = "content";
@@ -113,12 +114,12 @@ public class MoviesContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildReviewURL(String image){
-            return CONTENT_URI.buildUpon().appendPath(image).build();
+        public static Uri buildReviewURL(int movieId){
+            return CONTENT_URI.buildUpon().appendPath((Integer.toString(movieId))).build();
         }
 
-        public static String getImageFromURL(Uri uri){
-            return uri.getPathSegments().get(1);
+        public static int getReviewIdFromURL(Uri uri){
+            return Integer.parseInt(uri.getPathSegments().get(1));
 
         }
 

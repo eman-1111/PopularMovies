@@ -52,7 +52,7 @@ public class MoviesAdapter extends CursorAdapter {
 
 
         String image = cursor.getString(MoviesFragment.COL_IMAGE_PATH);
-       String imageURL = baseURL + image;
+        String imageURL = baseURL + image;
         ImageView movieImageView = (ImageView) view.findViewById(R.id.list_item_icon);
         Picasso.with(context).load(imageURL).into(movieImageView);
 
