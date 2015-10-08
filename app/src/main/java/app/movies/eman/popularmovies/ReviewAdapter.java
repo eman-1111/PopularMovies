@@ -2,6 +2,7 @@ package app.movies.eman.popularmovies;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 public class ReviewAdapter extends CursorAdapter {
     private Context mContext;
 
+    Loader<Cursor> reviewCursor;
 
     public ReviewAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
@@ -47,4 +49,7 @@ public class ReviewAdapter extends CursorAdapter {
 
     }
 
+    public void swapCursor(Loader<Cursor> reviewCursor) {
+        this.reviewCursor = reviewCursor;
+    }
 }

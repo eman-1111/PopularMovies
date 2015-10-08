@@ -123,7 +123,6 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
 
         //review
         reviewAdapter = new ReviewAdapter(getActivity(), null, 0);
-
         reviewListView = (ListView) rootView.findViewById(R.id.review_list);
         reviewListView.setAdapter(reviewAdapter);
 
@@ -153,29 +152,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
-        if(mUriVideo != null){
 
-            reviewCursor = new CursorLoader(getActivity(),
-                    mUriVideo,
-                    DETAIL_COLUMNS,
-                    null,
-                    null,
-                    null);
-
-            return null;
-        }
-
-        if(mUriReview != null){
-
-            videoCursor = new CursorLoader(getActivity(),
-                    mUriReview,
-                    DETAIL_COLUMNS,
-                    null,
-                    null,
-                    null);
-
-            return null;
-        }
 
 
         if (mUri != null) {
@@ -188,6 +165,30 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
                     null,
                     null
             );
+        }
+
+        if(mUriVideo != null){
+
+            reviewCursor = new CursorLoader(getActivity(),
+                    mUriVideo,
+                    DETAIL_COLUMNS_REVIEW,
+                    null,
+                    null,
+                    null);
+
+            return null;
+        }
+
+        if(mUriReview != null){
+
+            videoCursor = new CursorLoader(getActivity(),
+                    mUriReview,
+                    DETAIL_COLUMNS_VIDEO,
+                    null,
+                    null,
+                    null);
+
+            return null;
         }
         return null;
     }
@@ -211,15 +212,11 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             mVoteAverage.setText(voteAverage + "/10");
 
 
-
-
-
-
             String movieOverview = data.getString(COL_MOVIE_OVERVIEW);
             mMovieOverview.setText(movieOverview);
 
             //review
-            reviewAdapter.swapCursor((Cursor) reviewCursor);
+            reviewAdapter.swapCursor( reviewCursor);
 
             //video
             videoAdapter.swapCursor((Cursor) videoCursor);
@@ -230,7 +227,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         //review
-        reviewAdapter.swapCursor(null);
+        reviewAdapter.swapCursor(reviewCursor);
 
         //video
         videoAdapter.swapCursor(null);
