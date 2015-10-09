@@ -1,5 +1,8 @@
 package app.movies.eman.popularmovies;
 
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +31,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     private static final int DETAIL_LOADER = 0;
     private Uri mUri;
     static final String DETAIL_URI = "URI";
+    String key;
     String baseURL = "http://image.tmdb.org/t/p/w185/";
 
 
@@ -41,7 +45,8 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE,
             MoviesContract.ReviewEntry.COLUMN_REVIEW,
             MoviesContract.ReviewEntry.COLUMN_AUTHOR,
-            MoviesContract.VideoEntry.COLUMN_ADDRESS
+            MoviesContract.VideoEntry.COLUMN_ADDRESS,
+            MoviesContract.VideoEntry.COLUMN_MOVIE_NAME
     };
 
 
@@ -59,6 +64,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     public static final int COL_AUTHOR = 7;
 
     public static final int COL_ADDRESS = 8;
+    public static final int COL_NAME = 9;
 
 
 
@@ -71,7 +77,9 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     private TextView mReviewTV;
     private TextView mAuthorTV;
 
-    TextView mKeyTV;
+    private TextView mNameTV;
+    private ImageView mVideoIV;
+
 
 
 
@@ -86,7 +94,6 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
          Bundle arguments = getArguments();
          if (arguments != null) {
              mUri = arguments.getParcelable(MovieDetailFragment.DETAIL_URI);
-             int movieId = MoviesContract.MoviesEntry.getMovieIdFromUri(mUri);
 
          }
 
@@ -103,12 +110,33 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
         mReviewTV = (TextView)rootView.findViewById(R.id.list_item_review);
         mAuthorTV = (TextView)rootView.findViewById(R.id.list_item_author);
         //video
-        mKeyTV = (TextView)rootView.findViewById(R.id.list_item_trailer);
+        mNameTV = (TextView)rootView.findViewById(R.id.list_item_trailer);
+        mVideoIV = (ImageView)rootView.findViewById(R.id.list_item_video);
+
+        mVideoIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                watchYoutubeVideo(getActivity(), key);
+
+            }
+        });
 
 
 
          return rootView;
      }
+
+
+
+    public static void watchYoutubeVideo(Context context, String videoID){
+        try{
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + videoID));
+            context.startActivity(i);
+        }catch (ActivityNotFoundException e){
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + videoID));
+            context.startActivity(i);
+        }
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -169,8 +197,11 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
 
 
             //video
-            String key = data.getString(COL_ADDRESS);
-            mKeyTV.setText(key);
+            key = data.getString(COL_ADDRESS);
+            String name = data.getString(COL_NAME);
+            mNameTV.setText(name);
+            Picasso.with(getActivity()).load(imageURL).into(mVideoIV);
+
 
 
 
