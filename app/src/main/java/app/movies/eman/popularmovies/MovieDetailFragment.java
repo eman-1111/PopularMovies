@@ -10,9 +10,7 @@ import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -32,42 +30,21 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     static final String DETAIL_URI = "URI";
     String baseURL = "http://image.tmdb.org/t/p/w185/";
 
-    //review
-    private Uri mUriReview;
-    ReviewAdapter reviewAdapter;
-    ListView reviewListView;
-    Loader<Cursor> reviewCursor;
-
-
-    //video
-    private Uri mUriVideo;
-    VideoAdapter videoAdapter;
-    ListView videoListView;
-    Loader<Cursor> videoCursor;
 
 
     private static final String[] DETAIL_COLUMNS = {
-            MoviesContract.MoviesEntry.TABLE_NAME + "." + MoviesContract.MoviesEntry._ID,
+            MoviesContract.MoviesEntry.TABLE_NAME + "." + MoviesContract.MoviesEntry.COLUMN_MOVIE_ID,
             MoviesContract.MoviesEntry.COLUMN_IMAGE_PATH,
             MoviesContract.MoviesEntry.COLUMN_MOVIE_NAME,
             MoviesContract.MoviesEntry.COLUMN_MOVIE_OVERVIEW,
             MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE,
-            MoviesContract.MoviesEntry.COLUMN_MOVIE_ID,
-            MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE
-    };
-
-    private static final String[] DETAIL_COLUMNS_REVIEW= {
-            MoviesContract.ReviewEntry.TABLE_NAME + "." + MoviesContract.ReviewEntry._ID,
+            MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE,
             MoviesContract.ReviewEntry.COLUMN_REVIEW,
-            MoviesContract.ReviewEntry.COLUMN_AUTHOR
-
-    };
-
-    private static final String[] DETAIL_COLUMNS_VIDEO = {
-            MoviesContract.VideoEntry.TABLE_NAME + "." + MoviesContract.VideoEntry._ID,
+            MoviesContract.ReviewEntry.COLUMN_AUTHOR,
             MoviesContract.VideoEntry.COLUMN_ADDRESS
-
     };
+
+
 
     // These indices are tied to DETAIL_COLUMNS.  If DETAIL_COLUMNS changes, these
     // must change.
@@ -76,15 +53,12 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     public static final int COL_MOVIE_NAME = 2;
     public static final int COL_MOVIE_OVERVIEW = 3;
     public static final int COL_VOTE_AVERAGE = 4;
-    public static final int COL_MOVIES_ID = 5;
-    public static final int COL_RELEASE_DATE = 6;
+    public static final int COL_RELEASE_DATE = 5;
 
-    public static final int COL_REVIEW_ID = 0;
-    public static final int COL_REVIEW = 1;
-    public static final int COL_AUTHOR = 2;
+    public static final int COL_REVIEW = 6;
+    public static final int COL_AUTHOR = 7;
 
-    public static final int COL_VIDEO_ID = 0;
-    public static final int COL_ADDRESS = 1;
+    public static final int COL_ADDRESS = 8;
 
 
 
@@ -93,6 +67,12 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     private TextView mReleaseYear;
     private TextView mVoteAverage;
     private TextView mMovieOverview;
+
+    private TextView mReviewTV;
+    private TextView mAuthorTV;
+
+    TextView mKeyTV;
+
 
 
      public MovieDetailFragment() {
@@ -107,8 +87,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
          if (arguments != null) {
              mUri = arguments.getParcelable(MovieDetailFragment.DETAIL_URI);
              int movieId = MoviesContract.MoviesEntry.getMovieIdFromUri(mUri);
-             mUriVideo = MoviesContract.VideoEntry.buildVideoURL(movieId);
-             mUriReview = MoviesContract.ReviewEntry.buildReviewURL(movieId);
+
          }
 
 
@@ -120,26 +99,13 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
          mReleaseYear = (TextView) rootView.findViewById(R.id.release_year_textview);
          mVoteAverage = (TextView) rootView.findViewById(R.id.vote_average_textview);
          mMovieOverview = (TextView) rootView.findViewById(R.id.movie_overview_textview);
-
         //review
-        reviewAdapter = new ReviewAdapter(getActivity(), null, 0);
-        reviewListView = (ListView) rootView.findViewById(R.id.review_list);
-        reviewListView.setAdapter(reviewAdapter);
-
-
+        mReviewTV = (TextView)rootView.findViewById(R.id.list_item_review);
+        mAuthorTV = (TextView)rootView.findViewById(R.id.list_item_author);
         //video
-        videoAdapter = new VideoAdapter(getActivity(), null, 0);
-        videoListView = (ListView) rootView.findViewById(R.id.video_play_list);
-        videoListView.setAdapter(videoAdapter);
+        mKeyTV = (TextView)rootView.findViewById(R.id.list_item_trailer);
 
-        videoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-            }
-
-        });
 
          return rootView;
      }
@@ -167,29 +133,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             );
         }
 
-        if(mUriVideo != null){
 
-            reviewCursor = new CursorLoader(getActivity(),
-                    mUriVideo,
-                    DETAIL_COLUMNS_REVIEW,
-                    null,
-                    null,
-                    null);
-
-            return null;
-        }
-
-        if(mUriReview != null){
-
-            videoCursor = new CursorLoader(getActivity(),
-                    mUriReview,
-                    DETAIL_COLUMNS_VIDEO,
-                    null,
-                    null,
-                    null);
-
-            return null;
-        }
         return null;
     }
 
@@ -216,21 +160,29 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             mMovieOverview.setText(movieOverview);
 
             //review
-            reviewAdapter.swapCursor( reviewCursor);
+            String  review = data.getString(COL_REVIEW);
+            String author = data.getString(COL_AUTHOR);
+
+            mReviewTV.setText(review);
+            mAuthorTV.setText(author);
+
+
 
             //video
-            videoAdapter.swapCursor((Cursor) videoCursor);
+            String key = data.getString(COL_ADDRESS);
+            mKeyTV.setText(key);
+
+
+
+
+
 
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        //review
-        reviewAdapter.swapCursor(reviewCursor);
 
-        //video
-        videoAdapter.swapCursor(null);
 
     }
 }

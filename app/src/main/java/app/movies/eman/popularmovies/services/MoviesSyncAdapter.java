@@ -236,9 +236,9 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             JSONObject reviewJSON = new JSONObject(reviewJsonStr);
             JSONArray reviewArray = reviewJSON.getJSONArray(OWN_RESULT);
 
-            Vector<ContentValues> cVVector = new Vector<ContentValues>(reviewArray.length());
-
-            for(int i = 0; i < reviewArray.length(); i++){
+           // Vector<ContentValues> cVVector = new Vector<ContentValues>(reviewArray.length());
+        if( reviewArray.length() > 0){
+            for(int i = 0; i < 1; i++){
 
                 String review;
                 String author;
@@ -261,24 +261,21 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                         MoviesContract.ReviewEntry.COLUMN_MOVIE_ID + " = ?",
                         new String[]{Integer.toString(movieId)});
 
-      //         getContext().getContentResolver().insert(MoviesContract.ReviewEntry.CONTENT_URI, reviewValue);
+             getContext().getContentResolver().insert(MoviesContract.ReviewEntry.CONTENT_URI, reviewValue);
 
-                cVVector.add(reviewValue);
-                if ( cVVector.size() > 0 ) {
+//                cVVector.add(reviewValue);
+//                if ( cVVector.size() > 0 ) {
+//
+//                    // delete old data so we don't build up an endless history
+//
+//
+//                    ContentValues[] cvArray = new ContentValues[cVVector.size()];
+//                    cVVector.toArray(cvArray);
+//                    getContext().getContentResolver().bulkInsert(MoviesContract.ReviewEntry.CONTENT_URI, cvArray);
+//                }
 
-                    // delete old data so we don't build up an endless history
-
-
-                    ContentValues[] cvArray = new ContentValues[cVVector.size()];
-                    cVVector.toArray(cvArray);
-                    getContext().getContentResolver().bulkInsert(MoviesContract.ReviewEntry.CONTENT_URI, cvArray);
-
-
-
-                }
-
-            }
-            Log.d(LOG_TAG, "FetchReview Complete. " + cVVector.size() + " Inserted");
+            }}
+            Log.d(LOG_TAG, "FetchReview Complete.");
         }catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
@@ -299,9 +296,9 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             JSONObject videoJSON = new JSONObject(videoJsonStr);
             JSONArray videoArray = videoJSON.getJSONArray(OWN_RESULT);
 
-            Vector<ContentValues> cVVector = new Vector<ContentValues>(videoArray.length());
-
-            for(int i = 0; i < videoArray.length(); i++){
+           // Vector<ContentValues> cVVector = new Vector<ContentValues>(videoArray.length());
+        if(videoArray.length() > 0){
+            for(int i = 0; i < 1; i++){
 
                 String key;
                 String name;
@@ -325,25 +322,22 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                         MoviesContract.VideoEntry.COLUMN_MOVIE_ID + " = ?",
                         new String[]{Integer.toString(movieId)});
 
-            //   getContext().getContentResolver().insert(MoviesContract.VideoEntry.CONTENT_URI, videoValue);
+              getContext().getContentResolver().insert(MoviesContract.VideoEntry.CONTENT_URI, videoValue);
 
-                cVVector.add(videoValue);
-
-                if ( cVVector.size() > 0 ) {
-
-                 // delete old data so we don't build up an endless history
-
-                    ContentValues[] cvArray = new ContentValues[cVVector.size()];
-                    cVVector.toArray(cvArray);
-                    getContext().getContentResolver().bulkInsert(MoviesContract.VideoEntry.CONTENT_URI, cvArray);
-
-
-
-                }
+//                cVVector.add(videoValue);
+//
+//                if ( cVVector.size() > 0 ) {
+//
+//                 // delete old data so we don't build up an endless history
+//
+//                    ContentValues[] cvArray = new ContentValues[cVVector.size()];
+//                    cVVector.toArray(cvArray);
+//                    getContext().getContentResolver().bulkInsert(MoviesContract.VideoEntry.CONTENT_URI, cvArray);
+//                }
 
 
-            }
-            Log.d(LOG_TAG, "FetchVideos Complete. " + cVVector.size() + " Inserted");
+            }}
+            Log.d(LOG_TAG, "FetchVideos Complete. " );
 
         }catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
