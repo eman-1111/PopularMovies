@@ -263,18 +263,25 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
              getContext().getContentResolver().insert(MoviesContract.ReviewEntry.CONTENT_URI, reviewValue);
 
-//                cVVector.add(reviewValue);
-//                if ( cVVector.size() > 0 ) {
-//
-//                    // delete old data so we don't build up an endless history
-//
-//
-//                    ContentValues[] cvArray = new ContentValues[cVVector.size()];
-//                    cVVector.toArray(cvArray);
-//                    getContext().getContentResolver().bulkInsert(MoviesContract.ReviewEntry.CONTENT_URI, cvArray);
-//                }
 
-            }}
+
+            }
+        }else{
+            ContentValues reviewValue = new ContentValues();
+
+            reviewValue.put(MoviesContract.ReviewEntry.COLUMN_AUTHOR, "Not Available");
+            reviewValue.put(MoviesContract.ReviewEntry.COLUMN_REVIEW, "Not Available");
+            reviewValue.put(MoviesContract.ReviewEntry.COLUMN_REVIEW_ID, "Not Available");
+            reviewValue.put(MoviesContract.ReviewEntry.COLUMN_MOVIE_ID, movieId);
+
+            getContext().getContentResolver().delete(MoviesContract.ReviewEntry.CONTENT_URI,
+                    MoviesContract.ReviewEntry.COLUMN_MOVIE_ID + " = ?",
+                    new String[]{Integer.toString(movieId)});
+
+            getContext().getContentResolver().insert(MoviesContract.ReviewEntry.CONTENT_URI, reviewValue);
+
+
+        }
             Log.d(LOG_TAG, "FetchReview Complete.");
         }catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
@@ -324,19 +331,27 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
               getContext().getContentResolver().insert(MoviesContract.VideoEntry.CONTENT_URI, videoValue);
 
-//                cVVector.add(videoValue);
-//
-//                if ( cVVector.size() > 0 ) {
-//
-//                 // delete old data so we don't build up an endless history
-//
-//                    ContentValues[] cvArray = new ContentValues[cVVector.size()];
-//                    cVVector.toArray(cvArray);
-//                    getContext().getContentResolver().bulkInsert(MoviesContract.VideoEntry.CONTENT_URI, cvArray);
-//                }
 
 
-            }}
+
+            }
+        }else{
+            ContentValues videoValue = new ContentValues();
+
+
+
+            videoValue.put(MoviesContract.VideoEntry.COLUMN_ADDRESS, "Not Available");
+            videoValue.put(MoviesContract.VideoEntry.COLUMN_MOVIE_NAME, "Not Available");
+            videoValue.put(MoviesContract.VideoEntry.COLUMN_VIDEO_ID, "Not Available");
+            videoValue.put(MoviesContract.VideoEntry.COLUMN_MOVIE_ID, movieId);
+
+            getContext().getContentResolver().delete(MoviesContract.VideoEntry.CONTENT_URI,
+                    MoviesContract.VideoEntry.COLUMN_MOVIE_ID + " = ?",
+                    new String[]{Integer.toString(movieId)});
+
+            getContext().getContentResolver().insert(MoviesContract.VideoEntry.CONTENT_URI, videoValue);
+
+        }
             Log.d(LOG_TAG, "FetchVideos Complete. " );
 
         }catch (JSONException e) {
