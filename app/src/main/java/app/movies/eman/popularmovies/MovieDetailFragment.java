@@ -75,7 +75,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     private TextView mMovieOverview;
 
     private TextView mReviewTV;
-    private TextView mAuthorTV;
+    //private TextView mAuthorTV;
 
     private TextView mNameTV;
     private ImageView mVideoIV;
@@ -108,7 +108,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
          mMovieOverview = (TextView) rootView.findViewById(R.id.movie_overview_textview);
         //review
         mReviewTV = (TextView)rootView.findViewById(R.id.list_item_review);
-        mAuthorTV = (TextView)rootView.findViewById(R.id.list_item_author);
+        //mAuthorTV = (TextView)rootView.findViewById(R.id.list_item_author);
         //video
         mNameTV = (TextView)rootView.findViewById(R.id.list_item_trailer);
         mVideoIV = (ImageView)rootView.findViewById(R.id.list_item_video);
@@ -190,9 +190,14 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             //review
             String  review = data.getString(COL_REVIEW);
             String author = data.getString(COL_AUTHOR);
+            if (author.equals(".")) {
+                mReviewTV.setText(review + ".");
+            }else{
+                mReviewTV.setText(review + "  By " + author);
+            }
 
-            mReviewTV.setText(review);
-            mAuthorTV.setText(author);
+
+            //mAuthorTV.setText(author);
 
 
 
@@ -200,7 +205,6 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             key = data.getString(COL_ADDRESS);
             String name = data.getString(COL_NAME);
             mNameTV.setText(name);
-            Picasso.with(getActivity()).load(imageURL).into(mVideoIV);
 
 
 

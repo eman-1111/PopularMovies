@@ -269,7 +269,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         }else{
             ContentValues reviewValue = new ContentValues();
 
-            reviewValue.put(MoviesContract.ReviewEntry.COLUMN_AUTHOR, "Not Available");
+            reviewValue.put(MoviesContract.ReviewEntry.COLUMN_AUTHOR, ".");
             reviewValue.put(MoviesContract.ReviewEntry.COLUMN_REVIEW, "Not Available");
             reviewValue.put(MoviesContract.ReviewEntry.COLUMN_REVIEW_ID, "Not Available");
             reviewValue.put(MoviesContract.ReviewEntry.COLUMN_MOVIE_ID, movieId);

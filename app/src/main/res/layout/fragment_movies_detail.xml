@@ -17,7 +17,8 @@
             android:layout_width="fill_parent"
             android:textColor="@color/white"
             android:background="@color/dark_blue"
-            android:textSize="48sp" />
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:textSize="34sp" />
 
         <LinearLayout
             android:layout_height="match_parent"
@@ -47,7 +48,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center_vertical|center_horizontal"
+
                 android:orientation="vertical">
 
                 <TextView
@@ -72,12 +74,32 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:textColor="@color/grey_700"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp"/>
        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:background="@android:color/darker_gray"/>
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:text="Trailer :"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
 
         <LinearLayout
             android:orientation="horizontal" android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp">
 
             <ImageView
                 android:id="@+id/list_item_video"
@@ -85,37 +107,48 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/movie_icon"
                 />
             <TextView
                 android:id="@+id/list_item_trailer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_weight="1"/>
+                android:textSize="16sp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_weight="1"
+                android:layout_marginLeft="16dp"/>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:orientation="vertical" android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:background="@android:color/darker_gray"/>
+
+        <TextView
+            android:id="@+id/list_item_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:layout_weight="1"
+            android:text="Review :"
+            android:textColor="@color/black"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="14dp"/>
+
 
             <TextView
                 android:id="@+id/list_item_review"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_weight="1"/>
-            <TextView
-                android:id="@+id/list_item_author"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:layout_weight="1"/>
-
-        </LinearLayout>
-
-
-
+                android:textSize="16sp"
+                android:layout_weight="1"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginBottom="16dp"/>
 
     </LinearLayout>
     <!--  android:fontFamily="sans-serif-condensed" -->

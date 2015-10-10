@@ -3,7 +3,7 @@
     package="app.movies.eman.popularmovies" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-     Permissions required by the sync adapter
+    <!-- Permissions required by the sync adapter -->
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />

@@ -6,7 +6,7 @@
     <color name="grey_700">#646464</color>
     <color name="black">#000000</color>
 
-    <color name="light_blue">#ff64c2f4</color>
-    <color name="blue">#ff1ca8f4</color>
-    <color name="dark_blue">#0288D1</color>
+    <color name="light_blue">#a7ffeb</color>
+    <color name="blue">#1de9b6</color>
+    <color name="dark_blue">#009688</color>
 </resources>
