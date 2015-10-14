@@ -18,6 +18,7 @@
             android:textColor="@color/white"
             android:background="@color/dark_blue"
             android:layout_gravity="center_vertical|center_horizontal"
+            android:minHeight="?android:attr/listPreferredItemHeight"
             android:textSize="34sp" />
 
         <LinearLayout

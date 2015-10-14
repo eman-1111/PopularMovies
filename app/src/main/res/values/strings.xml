@@ -8,7 +8,7 @@
     <!-- SyncAdapter related -->
     <string name="sync_account_type">popularmovies.example.com</string>
     <string name="content_authority">app.movies.eman.popularmovies</string>
-    title_activity_settings
+    <!-- title_activity_settings-->
     <string name="title_activity_settings">Setting</string>
     <string name="pref_sort_label">Sort By</string>
     <string name="pref_sort_key" translatable="false">sort_by</string>

@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import app.movies.eman.popularmovies.data.MoviesContract;
-import app.movies.eman.popularmovies.services.MoviesSyncAdapter;
 
 /**
  * Created by user on 29/07/2015.
@@ -106,7 +105,6 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     void onSortByChange(){
-        MoviesSyncAdapter.initializeSyncAdapter(getActivity());
         getLoaderManager().restartLoader(MOVIE_LOADER ,null, this);
     }
     @Override
@@ -119,15 +117,22 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
 
         // Sort order:  Ascending, by date.
 
-        // Sort order:  Ascending, by date.
+
         Uri MoviesUri =  MoviesContract.MoviesEntry.buildMoviesURL();
+        String sortOrder;
+        if(MoviesAdapter.getSortBy(getActivity()).equals("vote_average.desc")){
+            sortOrder = MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE + " DESC";
+        }else{
+            sortOrder = null;
+        }
+
 
         return new CursorLoader(getActivity(),
                 MoviesUri,
                 DETAIL_COLUMNS,
                 null,
                 null,
-                null);
+                sortOrder);
     }
 
     @Override
