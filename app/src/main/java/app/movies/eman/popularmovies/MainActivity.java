@@ -26,7 +26,6 @@ public class MainActivity extends ActionBarActivity implements MoviesFragment.Ca
             // The detail container view will be present only in the large-screen layouts
             // (res/layout-sw600dp). If this view is present, then the activity should be
             // in two-pane mode.
-            ///ll
             mTwoPane = true;
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
@@ -38,6 +37,8 @@ public class MainActivity extends ActionBarActivity implements MoviesFragment.Ca
             }
         } else {
             mTwoPane = false;
+            getSupportActionBar().setElevation(0f);
+
         }
         MoviesSyncAdapter.initializeSyncAdapter(this);
     }
@@ -81,7 +82,7 @@ public class MainActivity extends ActionBarActivity implements MoviesFragment.Ca
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
-         return true;
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -91,16 +92,11 @@ public class MainActivity extends ActionBarActivity implements MoviesFragment.Ca
     protected void onResume() {
         super.onResume();
         String sortBy = MoviesAdapter.getSortBy(this);
-        if(sortBy != null && sortBy.equals(mSortBy)){
+        if(sortBy != null && !sortBy.equals(mSortBy)){
             MoviesFragment mf = (MoviesFragment)getSupportFragmentManager().findFragmentById(R.id.movie_fragment);
             if(mf != null){
-
+                mf.onSortByChange();
             }
-            MovieDetailFragment mdf = (MovieDetailFragment)getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
-            if(mdf != null){
-
-            }
-
         }
         mSortBy = sortBy;
 
@@ -108,3 +104,4 @@ public class MainActivity extends ActionBarActivity implements MoviesFragment.Ca
 
 
 }
+

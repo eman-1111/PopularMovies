@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+
 public class MoviesDetail extends ActionBarActivity {
 
     @Override
@@ -57,3 +58,4 @@ public class MoviesDetail extends ActionBarActivity {
 
 
 }
+
