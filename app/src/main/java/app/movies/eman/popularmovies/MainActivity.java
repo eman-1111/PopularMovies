@@ -37,8 +37,6 @@ public class MainActivity extends ActionBarActivity implements MoviesFragment.Ca
             }
         } else {
             mTwoPane = false;
-            getSupportActionBar().setElevation(0f);
-
         }
         MoviesSyncAdapter.initializeSyncAdapter(this);
     }
@@ -95,8 +93,13 @@ public class MainActivity extends ActionBarActivity implements MoviesFragment.Ca
         if(sortBy != null && sortBy.equals(mSortBy)){
             MoviesFragment mf = (MoviesFragment)getSupportFragmentManager().findFragmentById(R.id.movie_fragment);
             if(mf != null){
-                mf.onSortByChange();
+
             }
+            MovieDetailFragment mdf = (MovieDetailFragment)getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+            if(mdf != null){
+
+            }
+
         }
         mSortBy = sortBy;
 
