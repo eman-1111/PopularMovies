@@ -18,11 +18,13 @@
     <string-array name="sort_type_name">
         <item>Most Popular</item>
         <item>Highest Rated</item>
+        <item>Favorite Movie</item>
     </string-array>
 
     <string-array name="sort_type_value">
         <item>popularity.desc</item>
         <item>vote_average.desc</item>
+        <item>favorite_movie.desc</item>
     </string-array>
 
 

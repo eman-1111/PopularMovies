@@ -59,7 +59,7 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-         adapter = new MoviesAdapter(getActivity(), null, 0);
+        adapter = new MoviesAdapter(getActivity(), null, 0);
 
         gridView = (GridView) rootView.findViewById(R.id.movie_image_gridview);
         gridView.setAdapter(adapter);
@@ -125,7 +125,10 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
         String sortOrder;
         if(MoviesAdapter.getSortBy(getActivity()).equals("vote_average.desc")){
             sortOrder = MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE + " DESC";
-        }else{
+        }else if(MoviesAdapter.getSortBy(getActivity()).equals("favorite_movie.desc")){
+            sortOrder = MoviesContract.MoviesEntry.COLUMN_FAVORITE + " DESC";
+        }
+        else{
             sortOrder = null;
         }
 

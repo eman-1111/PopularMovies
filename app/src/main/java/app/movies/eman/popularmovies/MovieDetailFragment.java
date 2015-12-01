@@ -1,6 +1,7 @@
 package app.movies.eman.popularmovies;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +48,9 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             MoviesContract.ReviewEntry.COLUMN_REVIEW,
             MoviesContract.ReviewEntry.COLUMN_AUTHOR,
             MoviesContract.VideoEntry.COLUMN_ADDRESS,
-            MoviesContract.VideoEntry.COLUMN_MOVIE_NAME
+            MoviesContract.VideoEntry.COLUMN_MOVIE_NAME,
+            MoviesContract.MoviesEntry.COLUMN_FAVORITE
+
     };
 
 
@@ -59,6 +63,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     public static final int COL_MOVIE_OVERVIEW = 3;
     public static final int COL_VOTE_AVERAGE = 4;
     public static final int COL_RELEASE_DATE = 5;
+    public static final int COL_FAVORITE = 10;
 
     public static final int COL_REVIEW = 6;
     public static final int COL_AUTHOR = 7;
@@ -75,10 +80,10 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     private TextView mMovieOverview;
 
     private TextView mReviewTV;
-    //private TextView mAuthorTV;
 
     private TextView mNameTV;
     private ImageView mVideoIV;
+    private ImageView mFavoriteIV;
 
 
 
@@ -106,9 +111,44 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
          mReleaseYear = (TextView) rootView.findViewById(R.id.release_year_textview);
          mVoteAverage = (TextView) rootView.findViewById(R.id.vote_average_textview);
          mMovieOverview = (TextView) rootView.findViewById(R.id.movie_overview_textview);
+         mFavoriteIV= (ImageView)rootView.findViewById(R.id.favorite_image_view);
+         mFavoriteIV.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View button) {
+                //Set the button's appearance
+                button.setSelected(!button.isSelected());
+
+                if (button.isSelected()) {
+
+                    ContentValues favorite = new ContentValues();
+                    favorite.put(MoviesContract.MoviesEntry.COLUMN_FAVORITE, 1);
+
+                    getActivity().getContentResolver().update(MoviesContract.MoviesEntry.buildMoviesURL(),
+                            favorite,
+                             MoviesContract.MoviesEntry.TABLE_NAME +
+                             "." + MoviesContract.MoviesEntry.COLUMN_MOVIE_ID + " = ? ",
+                             new String[]{Integer.toString(MoviesContract.MoviesEntry.getMovieIdFromUri(mUri))});
+                    Log.d(LOG_TAG, "Selected");
+
+
+                }else if(!button.isSelected()){
+                    ContentValues favorite = new ContentValues();
+                    favorite.put(MoviesContract.MoviesEntry.COLUMN_FAVORITE, 0);
+
+                    getActivity().getContentResolver().update(MoviesContract.MoviesEntry.buildMoviesURL(),
+                            favorite,
+                            MoviesContract.MoviesEntry.TABLE_NAME +
+                                    "." + MoviesContract.MoviesEntry.COLUMN_MOVIE_ID + " = ? ",
+                            new String[]{Integer.toString(MoviesContract.MoviesEntry.getMovieIdFromUri(mUri))});
+                    Log.d(LOG_TAG, "Not Selected");
+
+                }
+
+            }
+        });
         //review
         mReviewTV = (TextView)rootView.findViewById(R.id.list_item_review);
-        //mAuthorTV = (TextView)rootView.findViewById(R.id.list_item_author);
+
         //video
         mNameTV = (TextView)rootView.findViewById(R.id.list_item_trailer);
         mVideoIV = (ImageView)rootView.findViewById(R.id.list_item_video);
@@ -187,6 +227,13 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             String movieOverview = data.getString(COL_MOVIE_OVERVIEW);
             mMovieOverview.setText(movieOverview);
 
+            int favorite = data.getInt(COL_FAVORITE);
+            if(favorite == 1){
+                mFavoriteIV.setSelected(true);
+            }else{
+                mFavoriteIV.setSelected(false);
+            }
+
             //review
             String  review = data.getString(COL_REVIEW);
             String author = data.getString(COL_AUTHOR);
@@ -195,10 +242,6 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             }else{
                 mReviewTV.setText(review + "  By " + author);
             }
-
-
-            //mAuthorTV.setText(author);
-
 
 
             //video

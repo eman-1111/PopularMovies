@@ -68,6 +68,7 @@ public class MoviesProvider extends ContentProvider {
         String selection = sIDSettingSelection;
         String[] selectionArgs = new String[]{Integer.toString(movieId)};
 
+
         return sVideoAndReviewByMovieQueryBuilder.query(
                 mOpenHelper.getReadableDatabase(), projection, selection,
                 selectionArgs, null, null, sortOrder);
