@@ -60,7 +60,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         String reviewJsonStr = null;
 
 
-        String apiKey ="#######";
+        String apiKey ="########";
         String sort = "popularity.desc";
 
         try {
@@ -96,9 +96,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                // But it does make debugging a *lot* easier if you print out the completed
-                // buffer for debugging.
+
                 buffer.append(line + "\n");
             }
 
@@ -139,9 +137,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
                     String videoLine;
                     while ((videoLine = reader.readLine()) != null) {
-                        // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                        // But it does make debugging a *lot* easier if you print out the completed
-                        // buffer for debugging.
+
                         videoBuffer.append(videoLine + "\n");
                     }
 
@@ -150,7 +146,6 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
                     }
                     videoJsonStr = videoBuffer.toString();
-                    // Log.d(LOG_TAG, videoJsonStr);
                     getVideoFormJson(videoJsonStr, moviesID.get(i));
 
                     ///////////////////////////////////////////////////////////////////
@@ -164,7 +159,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
 
                     URL reviewUrl = new URL(builtReviewUrl.toString());
-                    //Log.d(LOG_TAG, builtReviewUrl.toString());
+
 
                     urlConnection = (HttpURLConnection) reviewUrl.openConnection();
                     urlConnection.setRequestMethod("GET");
@@ -180,9 +175,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
                     String reviewLine;
                     while ((reviewLine = reader.readLine()) != null) {
-                        // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                        // But it does make debugging a *lot* easier if you print out the completed
-                        // buffer for debugging.
+
                         reviewBuffer.append(reviewLine + "\n");
                     }
 
@@ -191,8 +184,6 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
                     }
                     reviewJsonStr = reviewBuffer.toString();
-                    //Log.d(LOG_TAG, reviewJsonStr);
-
                     getReviewFromJson(reviewJsonStr, moviesID.get(i));
 
                 }
@@ -281,7 +272,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
 
             }
-            Log.d(LOG_TAG, "FetchReview Complete.");
+
         }catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
@@ -302,7 +293,6 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             JSONObject videoJSON = new JSONObject(videoJsonStr);
             JSONArray videoArray = videoJSON.getJSONArray(OWN_RESULT);
 
-            // Vector<ContentValues> cVVector = new Vector<ContentValues>(videoArray.length());
             if(videoArray.length() > 0){
                 for(int i = 0; i < 1; i++){
 
@@ -351,7 +341,6 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                 getContext().getContentResolver().insert(MoviesContract.VideoEntry.CONTENT_URI, videoValue);
 
             }
-            Log.d(LOG_TAG, "FetchVideos Complete. " );
 
         }catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
@@ -361,13 +350,6 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
-    /**
-     * Take the String representing the complete forecast in JSON Format and
-     * pull out the data we need to construct the Strings needed for the wireframes.
-     *
-     * Fortunately parsing is easy:  constructor takes the JSON string and converts it
-     * into an Object hierarchy for us.
-     */
     private ArrayList<Integer> getMoviesDataFromJson(String moviesJsonStr)
             throws JSONException {
 
@@ -388,7 +370,6 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             JSONObject moviesJson = new JSONObject(moviesJsonStr);
             JSONArray moviesArray = moviesJson.getJSONArray(OWM_RESULT);
 
-            //String[] resultStr = new String[moviesArray.length()];
             Vector<ContentValues> cVVector = new Vector<ContentValues>(moviesArray.length());
 
             for(int i = 0; i < moviesArray.length(); i++){
@@ -432,13 +413,6 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             }
 
             if ( cVVector.size() > 0 ) {
-                // delete old data so we don't build up an endless history
-//                    for(int j = 0; j < moviesID.length; j++){
-//                        getContext().getContentResolver().delete(MoviesContract.MoviesEntry.CONTENT_URI,
-//                                MoviesContract.MoviesEntry.COLUMN_MOVIE_ID + " = ?",
-//                                new String[]{Integer.toString(moviesID[j])});
-//                    }
-
 
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
                 cVVector.toArray(cvArray);
@@ -448,10 +422,6 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
             Log.d(LOG_TAG, "FetchMovie Complete. " + cVVector.size() + " Inserted" );
 
-
-           /* for (String s : resultStr) {
-                 Log.v(LOG_TAG, "Movie entry: " + s);
-            }*/
 
         }catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);

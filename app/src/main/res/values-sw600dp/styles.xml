@@ -1,5 +1,8 @@
 <resources>
-
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
     <style name="MovieListStyle">
         <item name="android:choiceMode">singleChoice</item>
         <item name="android:numColumns">3</item>

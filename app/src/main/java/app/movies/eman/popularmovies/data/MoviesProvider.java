@@ -29,8 +29,6 @@ public class MoviesProvider extends ContentProvider {
     static{
         sVideoAndReviewByMovieQueryBuilder = new SQLiteQueryBuilder();
 
-        //This is an inner join which looks like
-        //weather INNER JOIN location ON weather.location_id = location._id
         sVideoAndReviewByMovieQueryBuilder.setTables(
                 MoviesContract.MoviesEntry.TABLE_NAME + " INNER JOIN " +
                         MoviesContract.VideoEntry.TABLE_NAME + " INNER JOIN " +
@@ -107,12 +105,8 @@ public class MoviesProvider extends ContentProvider {
                 return MoviesContract.MoviesEntry.CONTENT_ITEM_TYPE;
             case VIDEO:
                 return MoviesContract.VideoEntry.CONTENT_TYPE;
-//            case VIDEO_WITH_ID:
-//                return MoviesContract.VideoEntry.CONTENT_TYPE;
             case REVIEW:
                 return MoviesContract.ReviewEntry.CONTENT_TYPE;
-//            case REVIEW_WITH_ID:
-//                return MoviesContract.ReviewEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

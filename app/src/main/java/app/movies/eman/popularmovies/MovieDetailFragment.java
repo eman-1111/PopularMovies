@@ -190,8 +190,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
 
 
         if (mUri != null) {
-            // Now create and return a CursorLoader that will take care of
-            // creating a Cursor for the data being displayed.
+
             return new CursorLoader( getActivity(),
                     mUri,
                     DETAIL_COLUMNS,

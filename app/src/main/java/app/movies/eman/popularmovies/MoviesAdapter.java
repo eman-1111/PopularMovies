@@ -33,7 +33,6 @@ public class MoviesAdapter extends CursorAdapter {
 
 
 
-        // create a new ImageView for each item referenced by the Adapter
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.movie_list_item, parent, false);
@@ -41,15 +40,9 @@ public class MoviesAdapter extends CursorAdapter {
 
         }
 
-    /*
-        This is where we fill-in the views with the contents of the cursor.
-     */
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        // our view is pretty simple here --- just a text view
-        // we'll keep the UI functional with a simple (and slow!) binding.
-
 
         String image = cursor.getString(MoviesFragment.COL_IMAGE_PATH);
         String imageURL = baseURL + image;
