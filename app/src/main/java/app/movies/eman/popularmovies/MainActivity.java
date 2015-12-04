@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -27,14 +26,12 @@ public class MainActivity extends ActionBarActivity implements MoviesFragment.Ca
 
             mTwoPane = true;
 
-            Log.d(LOG_TAG, "Tablet.");
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.movie_detail_container, new MovieDetailFragment(), DETAILFRAGMENT_TAG)
                         .commit();
             }
         } else {
-            Log.d(LOG_TAG, "Phone");
             mTwoPane = false;
             getSupportActionBar().setElevation(0f);
 

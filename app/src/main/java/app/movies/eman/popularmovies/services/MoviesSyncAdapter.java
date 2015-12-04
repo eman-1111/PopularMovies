@@ -60,7 +60,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         String reviewJsonStr = null;
 
 
-        String apiKey = "#########";
+        String apiKey = "ce754b8d51f322f0c4dea3f43e34a771";
         String sort = "popularity.desc";
 
         try {
@@ -187,7 +187,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                     getReviewFromJson(reviewJsonStr, moviesID.get(i));
 
                 }
-
+            Log.d(LOG_TAG, "Fetch is Complete. " + moviesID.size() + " Inserted" );
 
 
 
@@ -420,7 +420,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
             }
 
-            Log.d(LOG_TAG, "FetchMovie Complete. " + cVVector.size() + " Inserted" );
+
 
 
         }catch (JSONException e) {
