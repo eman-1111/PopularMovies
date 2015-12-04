@@ -60,7 +60,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         String reviewJsonStr = null;
 
 
-        String apiKey ="########";
+        String apiKey = "#########";
         String sort = "popularity.desc";
 
         try {
