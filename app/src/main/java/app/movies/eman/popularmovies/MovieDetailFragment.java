@@ -11,7 +11,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -34,8 +39,9 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     static final String DETAIL_URI = "URI";
     String key;
     String baseURL = "http://image.tmdb.org/t/p/w185/";
+    private ShareActionProvider mShareActionProvider;
 
-
+    String movieTitle;
 
     private static final String[] DETAIL_COLUMNS = {
             MoviesContract.MoviesEntry.TABLE_NAME + "." + MoviesContract.MoviesEntry.COLUMN_MOVIE_ID,
@@ -88,6 +94,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
 
 
      public MovieDetailFragment() {
+         setHasOptionsMenu(true);
      }
 
 
@@ -170,11 +177,36 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + videoID));
             context.startActivity(i);
         }catch (ActivityNotFoundException e){
+
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + videoID));
             context.startActivity(i);
         }
     }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.detail_menu, menu);
 
+        // Retrieve the share menu item
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+
+        // Get the provider and hold onto it to set/change the share intent.
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+
+        // If onLoadFinished happens before this, we can go ahead and set the share intent now.
+        if (movieTitle != null) {
+            mShareActionProvider.setShareIntent(createShareVideoURL());
+        }
+    }
+    private Intent createShareVideoURL() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, movieTitle + "  "
+                + "http://www.youtube.com/watch?v=" + key);
+        startActivity(Intent.createChooser(shareIntent, "Dialog title text"));
+        return shareIntent;
+    }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(DETAIL_LOADER, null, this);
@@ -205,7 +237,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null && data.moveToFirst()) {
 
-            String movieTitle = data.getString(COL_MOVIE_NAME);
+            movieTitle = data.getString(COL_MOVIE_NAME);
             mMovieTitle.setText(movieTitle);
 
             String image = data.getString(COL_IMAGE_PATH);
@@ -245,10 +277,9 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             String name = data.getString(COL_NAME);
             mNameTV.setText(name);
 
-
-
-
-
+            if (mShareActionProvider != null) {
+                mShareActionProvider.setShareIntent(createShareVideoURL());
+            }
 
 
         }
