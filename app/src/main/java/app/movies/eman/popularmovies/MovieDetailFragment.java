@@ -204,7 +204,6 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT, movieTitle + "  "
                 + "http://www.youtube.com/watch?v=" + key);
-        startActivity(Intent.createChooser(shareIntent, "Dialog title text"));
         return shareIntent;
     }
     @Override
