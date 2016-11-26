@@ -40,7 +40,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
     // Interval at which to sync with the weather, in seconds.
     // 60 seconds (1 minute) * 180 = 3 hours
     public static final int SYNC_INTERVAL = 60 * 180;
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
+    public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 3;
     ArrayList<Integer> moviesID = new ArrayList<Integer>();
 
     public MoviesSyncAdapter(Context context, boolean autoInitialize) {
@@ -67,7 +67,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             // Construct the URL for the api.themoviedb.org query
 
             final String MOVES_BASE_URL =
-                    "http://api.themoviedb.org/3/discover/movie?";
+                    "http://api.themoviedb.org/3/movie/top_rated?";
             final String SORT_PARAM = "sort_by";
             final String KEY_PARAM = "api_key";
 
@@ -77,7 +77,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                     .appendQueryParameter(KEY_PARAM, apiKey)
                     .build();
 
-
+            Log.e("url", builtUri + "");
             URL url = new URL(builtUri.toString());
 
             // Create the request to themoviedb, and open the connection
@@ -106,89 +106,87 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             }
 
             moviesJsonStr = buffer.toString();
-            ArrayList<Integer> moviesID  = getMoviesDataFromJson(moviesJsonStr);
+            ArrayList<Integer> moviesID = getMoviesDataFromJson(moviesJsonStr);
 
-            for(int i = 0; i < moviesID.size(); i++){
-
-
-
-                    //https://api.themoviedb.org/3/movie/211672/videos?api_key=[YOUR API KEY]
-                    final String VIDEO_BASE_URL =
-                            "https://api.themoviedb.org/3/movie/"+ moviesID.get(i)+ "/videos?";
-
-                    Uri builtVideoUrl = Uri.parse(VIDEO_BASE_URL).buildUpon()
-                            .appendQueryParameter(KEY_PARAM,apiKey)
-                            .build();
-
-                    URL videoUrl = new URL(builtVideoUrl.toString());
-                    //Log.d(LOG_TAG, builtVideoUrl.toString());
-
-                    urlConnection = (HttpURLConnection) videoUrl.openConnection();
-                    urlConnection.setRequestMethod("GET");
-                    urlConnection.connect();
-                    // Read the input stream into a String
-                    InputStream videoInputStream = urlConnection.getInputStream();
-                    StringBuffer videoBuffer = new StringBuffer();
-                    if (videoInputStream == null) {
-                        // Nothing to do.
-                        // return;
-                    }
-                    reader = new BufferedReader(new InputStreamReader(videoInputStream));
-
-                    String videoLine;
-                    while ((videoLine = reader.readLine()) != null) {
-
-                        videoBuffer.append(videoLine + "\n");
-                    }
-
-                    if (videoBuffer.length() == 0) {
-                        // Stream was empty.  No point in parsing.
-
-                    }
-                    videoJsonStr = videoBuffer.toString();
-                    getVideoFormJson(videoJsonStr, moviesID.get(i));
-
-                    ///////////////////////////////////////////////////////////////////
-
-                    //https://api.themoviedb.org/3/movie/211672/reviews?api_key=[YOUR API KEY]
-                    final String REVIEW_BASE_URL =
-                            "https://api.themoviedb.org/3/movie/" + moviesID.get(i)+ "/reviews?";
-                    Uri builtReviewUrl = Uri.parse(REVIEW_BASE_URL).buildUpon()
-                            .appendQueryParameter(KEY_PARAM, apiKey)
-                            .build();
+            for (int i = 0; i < moviesID.size(); i++) {
 
 
-                    URL reviewUrl = new URL(builtReviewUrl.toString());
+                //https://api.themoviedb.org/3/movie/211672/videos?api_key=[YOUR API KEY]
+                final String VIDEO_BASE_URL =
+                        "https://api.themoviedb.org/3/movie/" + moviesID.get(i) + "/videos?";
 
+                Uri builtVideoUrl = Uri.parse(VIDEO_BASE_URL).buildUpon()
+                        .appendQueryParameter(KEY_PARAM, apiKey)
+                        .build();
 
-                    urlConnection = (HttpURLConnection) reviewUrl.openConnection();
-                    urlConnection.setRequestMethod("GET");
-                    urlConnection.connect();
-                    // Read the input stream into a String
-                    InputStream reviewInputStream = urlConnection.getInputStream();
-                    StringBuffer reviewBuffer = new StringBuffer();
-                    if (reviewInputStream == null) {
-                        // Nothing to do.
-                        // return;
-                    }
-                    reader = new BufferedReader(new InputStreamReader(reviewInputStream));
+                URL videoUrl = new URL(builtVideoUrl.toString());
+                //Log.d(LOG_TAG, builtVideoUrl.toString());
 
-                    String reviewLine;
-                    while ((reviewLine = reader.readLine()) != null) {
+                urlConnection = (HttpURLConnection) videoUrl.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+                // Read the input stream into a String
+                InputStream videoInputStream = urlConnection.getInputStream();
+                StringBuffer videoBuffer = new StringBuffer();
+                if (videoInputStream == null) {
+                    // Nothing to do.
+                    // return;
+                }
+                reader = new BufferedReader(new InputStreamReader(videoInputStream));
 
-                        reviewBuffer.append(reviewLine + "\n");
-                    }
+                String videoLine;
+                while ((videoLine = reader.readLine()) != null) {
 
-                    if (reviewBuffer.length() == 0) {
-                        // Stream was empty.  No point in parsing.
+                    videoBuffer.append(videoLine + "\n");
+                }
 
-                    }
-                    reviewJsonStr = reviewBuffer.toString();
-                    getReviewFromJson(reviewJsonStr, moviesID.get(i));
+                if (videoBuffer.length() == 0) {
+                    // Stream was empty.  No point in parsing.
 
                 }
-            Log.d(LOG_TAG, "Fetch is Complete. " + moviesID.size() + " Inserted" );
+                videoJsonStr = videoBuffer.toString();
+                getVideoFormJson(videoJsonStr, moviesID.get(i));
 
+                ///////////////////////////////////////////////////////////////////
+
+                //https://api.themoviedb.org/3/movie/211672/reviews?api_key=[YOUR API KEY]
+                final String REVIEW_BASE_URL =
+                        "https://api.themoviedb.org/3/movie/" + moviesID.get(i) + "/reviews?";
+                Uri builtReviewUrl = Uri.parse(REVIEW_BASE_URL).buildUpon()
+                        .appendQueryParameter(KEY_PARAM, apiKey)
+                        .build();
+
+
+                URL reviewUrl = new URL(builtReviewUrl.toString());
+
+
+                urlConnection = (HttpURLConnection) reviewUrl.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+                // Read the input stream into a String
+                InputStream reviewInputStream = urlConnection.getInputStream();
+                StringBuffer reviewBuffer = new StringBuffer();
+                if (reviewInputStream == null) {
+                    // Nothing to do.
+                    // return;
+                }
+                reader = new BufferedReader(new InputStreamReader(reviewInputStream));
+
+                String reviewLine;
+                while ((reviewLine = reader.readLine()) != null) {
+
+                    reviewBuffer.append(reviewLine + "\n");
+                }
+
+                if (reviewBuffer.length() == 0) {
+                    // Stream was empty.  No point in parsing.
+
+                }
+                reviewJsonStr = reviewBuffer.toString();
+                getReviewFromJson(reviewJsonStr, moviesID.get(i));
+
+            }
+            Log.d(LOG_TAG, "Fetch is Complete. " + moviesID.size() + " Inserted");
 
 
         } catch (IOException e) {
@@ -211,7 +209,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             }
         }
 
-        return ;
+        return;
     }
 
     private void getReviewFromJson(String reviewJsonStr, int movieId)
@@ -227,8 +225,8 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             JSONArray reviewArray = reviewJSON.getJSONArray(OWN_RESULT);
 
             // Vector<ContentValues> cVVector = new Vector<ContentValues>(reviewArray.length());
-            if( reviewArray.length() > 0){
-                for(int i = 0; i < 1; i++){
+            if (reviewArray.length() > 0) {
+                for (int i = 0; i < 1; i++) {
 
                     String review;
                     String author;
@@ -254,9 +252,8 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                     getContext().getContentResolver().insert(MoviesContract.ReviewEntry.CONTENT_URI, reviewValue);
 
 
-
                 }
-            }else{
+            } else {
                 ContentValues reviewValue = new ContentValues();
 
                 reviewValue.put(MoviesContract.ReviewEntry.COLUMN_AUTHOR, ".");
@@ -273,7 +270,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
             }
 
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         }
@@ -293,20 +290,19 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             JSONObject videoJSON = new JSONObject(videoJsonStr);
             JSONArray videoArray = videoJSON.getJSONArray(OWN_RESULT);
 
-            if(videoArray.length() > 0){
-                for(int i = 0; i < 1; i++){
+            if (videoArray.length() > 0) {
+                for (int i = 0; i < 1; i++) {
 
                     String key;
                     String name;
                     String videoId;
 
-                    JSONObject fullVideo= videoArray.getJSONObject(i);
+                    JSONObject fullVideo = videoArray.getJSONObject(i);
                     key = fullVideo.getString(OWN_KEY);
                     name = fullVideo.getString(OWN_NAME);
                     videoId = fullVideo.getString(OWN_VIDEO_ID);
 
                     ContentValues videoValue = new ContentValues();
-
 
 
                     videoValue.put(MoviesContract.VideoEntry.COLUMN_ADDRESS, key);
@@ -321,12 +317,9 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                     getContext().getContentResolver().insert(MoviesContract.VideoEntry.CONTENT_URI, videoValue);
 
 
-
-
                 }
-            }else{
+            } else {
                 ContentValues videoValue = new ContentValues();
-
 
 
                 videoValue.put(MoviesContract.VideoEntry.COLUMN_ADDRESS, "Not Available");
@@ -342,7 +335,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
             }
 
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         }
@@ -363,7 +356,6 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         final String OWM_MOVIE_ID = "id";
 
 
-
         try {
 
 
@@ -372,7 +364,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
             Vector<ContentValues> cVVector = new Vector<ContentValues>(moviesArray.length());
 
-            for(int i = 0; i < moviesArray.length(); i++){
+            for (int i = 0; i < moviesArray.length(); i++) {
                 String overview;
                 String releaseDate;
                 String title;
@@ -391,18 +383,16 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                 ContentValues movieValues = new ContentValues();
 
 
-
-                movieValues.put( MoviesContract.MoviesEntry.COLUMN_IMAGE_PATH, image);
-                movieValues.put( MoviesContract.MoviesEntry.COLUMN_MOVIE_NAME, title);
-                movieValues.put( MoviesContract.MoviesEntry.COLUMN_MOVIE_OVERVIEW, overview);
-                movieValues.put( MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE, releaseDate);
-                movieValues.put( MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE, voteAverage);
-                movieValues.put( MoviesContract.MoviesEntry.COLUMN_MOVIE_ID, movieID);
-                movieValues.put( MoviesContract.MoviesEntry.COLUMN_FAVORITE, 0);
-
+                movieValues.put(MoviesContract.MoviesEntry.COLUMN_IMAGE_PATH, image);
+                movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_NAME, title);
+                movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_OVERVIEW, overview);
+                movieValues.put(MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE, releaseDate);
+                movieValues.put(MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE, voteAverage);
+                movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_ID, movieID);
+                movieValues.put(MoviesContract.MoviesEntry.COLUMN_FAVORITE, 0);
 
 
-                if(!isOldMovie(moviesID, movieID)){
+                if (!isOldMovie(moviesID, movieID)) {
 
                     moviesID.add(movieID);
 
@@ -412,7 +402,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
             }
 
-            if ( cVVector.size() > 0 ) {
+            if (cVVector.size() > 0) {
 
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
                 cVVector.toArray(cvArray);
@@ -421,9 +411,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             }
 
 
-
-
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
         }
@@ -434,8 +422,8 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
     private boolean isOldMovie(ArrayList<Integer> moviesID, int movieID) {
         boolean found = false;
-        for(int i = 0; i < moviesID.size(); i++){
-            if(moviesID.get(i) == movieID){
+        for (int i = 0; i < moviesID.size(); i++) {
+            if (moviesID.get(i) == movieID) {
                 found = true;
             }
 
@@ -464,6 +452,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
     /**
      * Helper method to have the sync adapter sync immediately
+     *
      * @param context The context used to access the account service
      */
     public static void syncImmediately(Context context) {
@@ -492,7 +481,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                 context.getString(R.string.app_name), context.getString(R.string.sync_account_type));
 
         // If the password doesn't exist, the account doesn't exist
-        if ( null == accountManager.getPassword(newAccount) ) {
+        if (null == accountManager.getPassword(newAccount)) {
 
         /*
          * Add the account and account type, no password or user data
@@ -529,6 +518,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
          */
         syncImmediately(context);
     }
+
     public static void initializeSyncAdapter(Context context) {
         getSyncAccount(context);
     }
