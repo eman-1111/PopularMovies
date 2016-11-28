@@ -129,7 +129,7 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
             sortOrder = MoviesContract.MoviesEntry.COLUMN_FAVORITE + " DESC";
         }
         else{
-            sortOrder = null;
+            sortOrder = MoviesContract.MoviesEntry.COLUMN_POPULARITY + " DESC";
         }
 
 

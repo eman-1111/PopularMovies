@@ -46,6 +46,7 @@ public class MoviesContract {
 
         public static final String COLUMN_MOVIE_NAME = "move_name";
         public static final String COLUMN_VOTE_AVERAGE = "vote_average";
+        public static final String COLUMN_POPULARITY = "popularity";
         public static final String COLUMN_MOVIE_OVERVIEW = "movie_overview";
         public static final String COLUMN_RELEASE_DATE = "release_date";
         public static final String COLUMN_MOVIE_ID = "movie_id";

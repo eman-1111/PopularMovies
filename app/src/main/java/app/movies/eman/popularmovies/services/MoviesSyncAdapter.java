@@ -60,14 +60,14 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         String reviewJsonStr = null;
 
 
-        String apiKey = "####";
+        String apiKey = "ce754b8d51f322f0c4dea3f43e34a771";
         String sort = "popularity.desc";
 
         try {
             // Construct the URL for the api.themoviedb.org query
 
             final String MOVES_BASE_URL =
-                    "http://api.themoviedb.org/3/movie/top_rated?";
+                    "http://api.themoviedb.org/3/discover/movie?";
             final String SORT_PARAM = "sort_by";
             final String KEY_PARAM = "api_key";
 
@@ -354,6 +354,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         final String OWM_VOTE_AVERAGE = "vote_average";
         final String OWM_POSTER_PATH = "poster_path";
         final String OWM_MOVIE_ID = "id";
+        final String OWM_POPULARITY = "popularity";
 
 
         try {
@@ -370,6 +371,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                 String title;
                 String image;
                 String voteAverage;
+                String popularity;
                 int movieID;
 
                 JSONObject fullMovie = moviesArray.getJSONObject(i);
@@ -379,6 +381,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                 image = fullMovie.getString(OWM_POSTER_PATH);
                 voteAverage = fullMovie.getString(OWM_VOTE_AVERAGE);
                 movieID = fullMovie.getInt(OWM_MOVIE_ID);
+                popularity = fullMovie.getString(OWM_POPULARITY);
 
                 ContentValues movieValues = new ContentValues();
 
@@ -389,6 +392,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
                 movieValues.put(MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE, releaseDate);
                 movieValues.put(MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE, voteAverage);
                 movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_ID, movieID);
+                movieValues.put(MoviesContract.MoviesEntry.COLUMN_POPULARITY, popularity);
                 movieValues.put(MoviesContract.MoviesEntry.COLUMN_FAVORITE, 0);
 
 
