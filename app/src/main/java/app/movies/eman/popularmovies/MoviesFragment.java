@@ -1,5 +1,8 @@
 package app.movies.eman.popularmovies;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,12 +19,11 @@ import android.widget.GridView;
 import app.movies.eman.popularmovies.data.MoviesContract;
 
 
-
 /**
  * Created by user on 29/07/2015.
  */
 
-public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MoviesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     MoviesAdapter adapter;
     GridView gridView;
@@ -44,7 +46,6 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
     public static final int COL_MOVIE_ID = 2;
 
 
-
     public MoviesFragment() {
     }
 
@@ -55,6 +56,7 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
          */
         public void onItemSelected(Uri dateUri);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -107,9 +109,10 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
         super.onActivityCreated(savedInstanceState);
     }
 
-    void onSortByChange(){
-        getLoaderManager().restartLoader(MOVIE_LOADER ,null, this);
+    void onSortByChange() {
+        getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
     }
+
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         // This is called when a new Loader needs to be created.  This
@@ -121,39 +124,51 @@ public  class MoviesFragment extends Fragment implements LoaderManager.LoaderCal
         // Sort order:  Ascending, by date.
 
 
-        Uri MoviesUri =  MoviesContract.MoviesEntry.buildMoviesURL();
+        Uri MoviesUri = MoviesContract.MoviesEntry.buildMoviesURL();
         String sortOrder;
-        if(MoviesAdapter.getSortBy(getActivity()).equals("vote_average.desc")){
+        String selection;
+        String[] selectionArgs;
+
+        if (MoviesAdapter.getSortBy(getActivity()).equals("vote_average.desc")) {
             sortOrder = MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE + " DESC";
-        }else if(MoviesAdapter.getSortBy(getActivity()).equals("favorite_movie.desc")){
+            selection = null;
+            selectionArgs = null;
+
+        } else if (MoviesAdapter.getSortBy(getActivity()).equals("favorite_movie.desc")) {
             sortOrder = MoviesContract.MoviesEntry.COLUMN_FAVORITE + " DESC";
-        }
-        else{
+             selection = MoviesContract.MoviesEntry.TABLE_NAME +
+                     "." + MoviesContract.MoviesEntry.COLUMN_FAVORITE + " = ? ";
+             selectionArgs = new String[]{Integer.toString(1)};
+
+        } else {
             sortOrder = MoviesContract.MoviesEntry.COLUMN_POPULARITY + " DESC";
+            selection = null;
+            selectionArgs = null;
+
         }
 
 
         return new CursorLoader(getActivity(),
                 MoviesUri,
                 DETAIL_COLUMNS,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 sortOrder);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
         adapter.swapCursor(data);
         if (mPosition != GridView.INVALID_POSITION) {
-            // If we don't need to restart the loader, and there's a desired position to restore
-            // to, do so now.
+
             gridView.smoothScrollToPosition(mPosition);
         }
+
+
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor>  loader) {
+    public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
     }
 
