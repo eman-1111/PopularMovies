@@ -135,10 +135,10 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
             selectionArgs = null;
 
         } else if (MoviesAdapter.getSortBy(getActivity()).equals("favorite_movie.desc")) {
-            sortOrder = MoviesContract.MoviesEntry.COLUMN_FAVORITE + " DESC";
-             selection = MoviesContract.MoviesEntry.TABLE_NAME +
-                     "." + MoviesContract.MoviesEntry.COLUMN_FAVORITE + " = ? ";
-             selectionArgs = new String[]{Integer.toString(1)};
+            sortOrder = null;
+            selection = MoviesContract.MoviesEntry.TABLE_NAME +
+                    "." + MoviesContract.MoviesEntry.COLUMN_FAVORITE + " = ? ";
+            selectionArgs = new String[]{Integer.toString(1)};
 
         } else {
             sortOrder = MoviesContract.MoviesEntry.COLUMN_POPULARITY + " DESC";
