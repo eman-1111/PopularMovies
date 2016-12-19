@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import app.movies.eman.popularmovies.data.MoviesContract;
+import app.movies.eman.popularmovies.services.MoviesSyncAdapter;
 
 
 /**
@@ -110,7 +112,15 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
     void onSortByChange() {
+
+        if (!MoviesAdapter.getSortBy(getActivity()).equals("favorite_movie.desc")) {
+            updateMovies();
+        }
         getLoaderManager().restartLoader(MOVIE_LOADER, null, this);
+    }
+
+    private void updateMovies() {
+        MoviesSyncAdapter.syncImmediately(getActivity());
     }
 
     @Override
@@ -125,27 +135,30 @@ public class MoviesFragment extends Fragment implements LoaderManager.LoaderCall
 
 
         Uri MoviesUri = MoviesContract.MoviesEntry.buildMoviesURL();
-        String sortOrder;
-        String selection;
-        String[] selectionArgs;
+        String sortOrder = null;
+        String selection = null;
+        String[] selectionArgs = null;
 
-        if (MoviesAdapter.getSortBy(getActivity()).equals("vote_average.desc")) {
-            sortOrder = MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE + " DESC";
-            selection = null;
-            selectionArgs = null;
-
-        } else if (MoviesAdapter.getSortBy(getActivity()).equals("favorite_movie.desc")) {
+//        if (MoviesAdapter.getSortBy(getActivity()).equals("vote_average.desc")) {
+//            sortOrder = MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE + " DESC";
+//            selection = null;
+//            selectionArgs = null;
+//
+//        } else
+        if (MoviesAdapter.getSortBy(getActivity()).equals("favorite_movie.desc")) {
+            Log.e("MoviesAdapter", "favorite_movie");
             sortOrder = null;
             selection = MoviesContract.MoviesEntry.TABLE_NAME +
                     "." + MoviesContract.MoviesEntry.COLUMN_FAVORITE + " = ? ";
             selectionArgs = new String[]{Integer.toString(1)};
-
-        } else {
-            sortOrder = MoviesContract.MoviesEntry.COLUMN_POPULARITY + " DESC";
-            selection = null;
-            selectionArgs = null;
-
         }
+
+//        } else {
+//            sortOrder = MoviesContract.MoviesEntry.COLUMN_POPULARITY + " DESC";
+//            selection = null;
+//            selectionArgs = null;
+//
+//        }
 
 
         return new CursorLoader(getActivity(),

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -83,10 +84,16 @@ public class MainActivity extends ActionBarActivity implements MoviesFragment.Ca
     protected void onResume() {
         super.onResume();
         String sortBy = MoviesAdapter.getSortBy(this);
-        if(sortBy != null && !sortBy.equals(mSortBy)){
+        Log.e("onResume",sortBy + " " + mSortBy);
+        if(sortBy != null && !sortBy.equals(mSortBy) ){
+            Log.e("onResume","MoviesSyncAdapter");
             MoviesFragment mf = (MoviesFragment)getSupportFragmentManager().findFragmentById(R.id.movie_fragment);
             if(mf != null){
                 mf.onSortByChange();
+            }
+            MovieDetailFragment df = (MovieDetailFragment)getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+            if ( null != df ) {
+                df.onSortByChange();
             }
         }
         mSortBy = sortBy;

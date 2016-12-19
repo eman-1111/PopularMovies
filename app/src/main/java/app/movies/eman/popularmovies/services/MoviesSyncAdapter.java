@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Vector;
 
+import app.movies.eman.popularmovies.MoviesAdapter;
 import app.movies.eman.popularmovies.R;
 import app.movies.eman.popularmovies.data.MoviesContract;
 
@@ -60,14 +61,20 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         String reviewJsonStr = null;
 
 
-        String apiKey = "ce754b8d51f322f0c4dea3f43e34a771";
+        String apiKey = "########";
         String sort = "popularity.desc";
 
         try {
             // Construct the URL for the api.themoviedb.org query
-
-            final String MOVES_BASE_URL =
-                    "http://api.themoviedb.org/3/discover/movie?";
+            Context context = getContext();
+            final String MOVES_BASE_URL;
+            if (MoviesAdapter.getSortBy(context).equals("popularity.desc")) {
+                MOVES_BASE_URL =
+                        " http://api.themoviedb.org/3/movie/popular?";
+            } else {
+                MOVES_BASE_URL =
+                        " http://api.themoviedb.org/3/movie/top_rated?";
+            }
             final String SORT_PARAM = "sort_by";
             final String KEY_PARAM = "api_key";
 
@@ -407,6 +414,9 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             }
 
             if (cVVector.size() > 0) {
+                // delete old data so we don't build up an endless history
+                getContext().getContentResolver().delete(MoviesContract.MoviesEntry.CONTENT_URI,
+                        null,null);
 
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
                 cVVector.toArray(cvArray);

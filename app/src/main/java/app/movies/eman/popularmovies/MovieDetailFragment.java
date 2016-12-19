@@ -170,7 +170,12 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
          return rootView;
      }
 
-
+    void onSortByChange() {
+        Uri uri = mUri;
+        if (null != uri) {
+            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+        }
+    }
 
     public static void watchYoutubeVideo(Context context, String videoID){
         try{
